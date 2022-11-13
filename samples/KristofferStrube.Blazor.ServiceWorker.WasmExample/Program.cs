@@ -8,7 +8,7 @@ var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
 builder.RootComponents.Add<HeadOutlet>("head::after");
 
-builder.Services.AddScoped(sp => new HttpClient(new AddHeadersDelegatingHandler()) { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
+builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddNavigatorService();
 
 // This is a very simple logger.
@@ -28,7 +28,6 @@ await serviceWorker.RegisterAsync("./service-worker.js", async (scope) => {
     scope.OnActivate = async () =>
     {
         logger.WriteLine("We activated!");
-        await Task.Yield();
     };
     scope.OnFetch = async (fetchEvent) =>
     {
@@ -54,20 +53,3 @@ await serviceWorker.RegisterAsync("./service-worker.js", async (scope) => {
 });
 
 await app.RunAsync();
-
-public class AddHeadersDelegatingHandler : DelegatingHandler
-{
-    public AddHeadersDelegatingHandler() : base(new HttpClientHandler())
-    {
-    }
-
-    protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
-    {
-        if (request.RequestUri.OriginalString.Contains("KristofferStrube.Blazor.ServiceWorker.Script.js"))
-        {
-            request.Headers.Add("service-worker-allowed", "/");
-
-        }
-        return base.SendAsync(request, cancellationToken);
-    }
-}

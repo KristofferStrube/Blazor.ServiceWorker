@@ -21,7 +21,34 @@ On the *API Coverage Status* page you can get an overview over what parts of the
 
 # Getting Started
 A limitation of statically served Service Workers is that they only have access to the scope that the actual file belong in.
-So we need to place the Service Worker interop bootstrapper in the root of our project
+So we need to place the Service Worker interop bootstrapper in the root of our project. A minified version of this can be found in the sample project at
+https://github.com/KristofferStrube/Blazor.ServiceWorker/blob/main/samples/KristofferStrube.Blazor.ServiceWorker.WasmExample/wwwroot/service-worker.js
+
+The original version that we have minified is at
+https://github.com/KristofferStrube/Blazor.ServiceWorker/blob/main/src/KristofferStrube.Blazor.ServiceWorker/wwwroot/KristofferStrube.Blazor.ServiceWorker.Script.js
+
+Then once we have copied the script to the our project we can register a service worker like so:
+
+```csharp
+
+var builder = WebAssemblyHostBuilder.CreateDefault(args);
+
+// other services added and root components configured
+
+builder.Services.AddNavigatorService();
+
+var app = builder.Build();
+
+var navigator = app.Services.GetRequiredService<INavigatorService>();
+var serviceWorker = await navigator.GetServiceWorkerAsync();
+
+await serviceWorker.RegisterAsync("./service-worker.js", (scope) => {
+    scope.OnActivate = () =>
+    {
+        Console.WriteLine("We will do something when activating!");
+    };
+});
+```
 
 # Issues
 Feel free to open issues on the repository if you find any errors with the package or have wishes for features.
