@@ -4,6 +4,9 @@ const params = new Proxy(new URLSearchParams(self.location.search), {
 let id = params.id;
 
 let proxyDict = {};
+proxyDict[id] = self;
+
+let resolvers = {};
 
 self.oninstall = (event) => {
     invokePost("Install", generateGUID(), event);
@@ -12,7 +15,14 @@ self.onactivate = (event) => {
     invokePost("Activate", generateGUID(), event);
 }
 self.onfetch = (event) => {
-    invokePost("Fetch", generateGUID(), event);
+    if (event.request.url == "https://localhost:7029/") {
+        var id = generateGUID();
+        var promise = new Promise((resolve, _) => {
+            resolvers[id] = resolve;
+        });
+        invokePost("Fetch", id, event);
+        event.respondWith(promise)
+    }
 }
 self.onpush = (event) => {
     invokePost("Push", generateGUID(), event);
@@ -30,15 +40,41 @@ self.addEventListener("message", (e) => {
         var obj = proxyDict[message.id][message.attribute];
         resolvePost(message.type, message.id, obj);
     }
-    else if (message.type == "CallProxyMethodAsProxy") {
-        var obj = proxyDict[message.id][message.method].call(proxyDict[message.id]);
-        var objectId = generateGUID();
-        proxyDict[objectId] = obj;
-        resolvePost(message.type, message.id, objectId);
+    else if (message.type.startsWith("Call")) {
+        for (let i = 0; i < message.args.length; i++) {
+            if (message.args[i] != null && message.args[i].length == 36 && message.args[i].charAt(8) == '-') {
+                message.args[i] = proxyDict[message.args[i]];
+            }
+        }
+        if (message.type == "CallProxyMethodAsProxy") {
+            var obj = proxyDict[message.id][message.method].call(proxyDict[message.id], message.args);
+            var objectId = generateGUID();
+            proxyDict[objectId] = obj;
+            resolvePost(message.type, message.id, objectId);
+        }
+        else if (message.type == "CallProxyAsyncMethodAsProxy") {
+            proxyDict[message.id][message.method].call(proxyDict[message.id], message.args).then(obj => {
+                var objectId = generateGUID();
+                if (obj == undefined) {
+                    objectId = undefined;
+                }
+                else {
+                    proxyDict[objectId] = obj;
+                }
+                resolvePost(message.type, message.id, objectId);
+            });
+        }
+        else if (message.type == "CallProxyMethod") {
+            var obj = proxyDict[message.id][message.method].call(proxyDict[message.id], message.args);
+            resolvePost(message.type, message.id, obj);
+        }
     }
-    else if (message.type == "CallProxyMethod") {
-        var obj = proxyDict[message.id][message.method].call(proxyDict[message.id]);
-        resolvePost(message.type, message.id, obj);
+    else if (message.type == "SetupProxyPromise") {
+        var resolveId = generateGUID();
+        resolvePost(message.type, message.id, resolveId);
+    }
+    else if (message.type == "ResolveProxyPromise") {
+        resolvers[message.id].call(this, proxyDict[message.objectId]);
     }
 });
 

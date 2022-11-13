@@ -11,7 +11,7 @@ public class Request : BaseJSServiceWorkerGlobalScopeProxy
     public async Task<string> GetURLAsync()
     {
         await container.StartMessagesAsync();
-        var helper = await helperTask.Value;
+        IJSObjectReference helper = await helperTask.Value;
         return await helper.InvokeAsync<string>("getProxyAttribute", container.JSReference, Id, "url");
     }
 }

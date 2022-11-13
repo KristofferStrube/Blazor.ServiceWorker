@@ -16,9 +16,9 @@ public class NavigatorService : INavigatorService
 
     public async Task<ServiceWorkerContainer> GetServiceWorkerAsync()
     {
-        var helper = await helperTask.Value;
-        var jSNavigator = await helper.InvokeAsync<IJSObjectReference>("getNavigator");
-        var jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", jSNavigator, "serviceWorker");
+        IJSObjectReference helper = await helperTask.Value;
+        IJSObjectReference jSNavigator = await helper.InvokeAsync<IJSObjectReference>("getNavigator");
+        IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", jSNavigator, "serviceWorker");
         return new ServiceWorkerContainer(jSRuntime, jSInstance);
     }
 }

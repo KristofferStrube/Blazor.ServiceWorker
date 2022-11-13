@@ -10,9 +10,13 @@ public class ServiceWorkerRegistration : BaseJSWrapper
 
     public async Task<ServiceWorker?> GetActiveAsync()
     {
-        var helper = await helperTask.Value;
-        var jSInstance = await helper.InvokeAsync<IJSObjectReference?>("getAttributeAsync", JSReference, "active");
-        if (jSInstance is null) return null;
+        IJSObjectReference helper = await helperTask.Value;
+        IJSObjectReference? jSInstance = await helper.InvokeAsync<IJSObjectReference?>("getAttributeAsync", JSReference, "active");
+        if (jSInstance is null)
+        {
+            return null;
+        }
+
         return new ServiceWorker(jSRuntime, jSInstance);
     }
 }

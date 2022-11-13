@@ -1,6 +1,4 @@
 ﻿using Microsoft.JSInterop;
-using System.ComponentModel;
-using static System.Formats.Asn1.AsnWriter;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
@@ -10,7 +8,7 @@ public static class ScriptManager
 
     public static async Task AddScriptAsync(Guid id, IJSRuntime jSRuntime, ServiceWorkerContainer container, Func<ServiceWorkerGlobalScope, Task> script)
     {
-        var scope = new ServiceWorkerGlobalScope(jSRuntime, id, container);
+        ServiceWorkerGlobalScope scope = new ServiceWorkerGlobalScope(jSRuntime, id, container);
         await script(scope);
         scripts.Add(id, new(jSRuntime, container, scope, script));
     }
@@ -19,7 +17,7 @@ public static class ScriptManager
     public static async Task InvokeOnInstallAsync(string stringId, string eventId)
     {
         if (Guid.TryParse(stringId, out Guid id) &&
-            scripts.TryGetValue(id, out var context) &&
+            scripts.TryGetValue(id, out ExecutionContext? context) &&
             context.Scope.OnInstall is not null)
         {
             await context.Scope.OnInstall.Invoke();
@@ -30,7 +28,7 @@ public static class ScriptManager
     public static async Task InvokeOnActivateAsync(string stringId, string eventId)
     {
         if (Guid.TryParse(stringId, out Guid id) &&
-            scripts.TryGetValue(id, out var context) &&
+            scripts.TryGetValue(id, out ExecutionContext? context) &&
             context.Scope.OnActivate is not null)
         {
             await context.Scope.OnActivate.Invoke();
@@ -41,7 +39,7 @@ public static class ScriptManager
     public static async Task InvokeOnFetchAsync(string stringId, string eventId)
     {
         if (Guid.TryParse(stringId, out Guid id) &&
-            scripts.TryGetValue(id, out var context) &&
+            scripts.TryGetValue(id, out ExecutionContext? context) &&
             context.Scope.OnFetch is not null)
         {
             await context.Scope.OnFetch.Invoke(new FetchEvent(context.JSRuntime, Guid.Parse(eventId), context.Container));
@@ -52,7 +50,7 @@ public static class ScriptManager
     public static async Task InvokeOnPushAsync(string stringId, string eventId)
     {
         if (Guid.TryParse(stringId, out Guid id) &&
-            scripts.TryGetValue(id, out var context) &&
+            scripts.TryGetValue(id, out ExecutionContext? context) &&
             context.Scope.OnPush is not null)
         {
             await context.Scope.OnPush.Invoke(new PushEvent(context.JSRuntime, Guid.Parse(eventId), context.Container));

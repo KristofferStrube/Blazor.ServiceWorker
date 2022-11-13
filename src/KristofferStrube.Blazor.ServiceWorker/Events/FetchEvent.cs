@@ -11,8 +11,15 @@ public class FetchEvent : BaseJSServiceWorkerGlobalScopeProxy
     public async Task<Request> GetRequestAsync()
     {
         await container.StartMessagesAsync();
-        var helper = await helperTask.Value;
-        var objectId = await helper.InvokeAsync<string>("getProxyAttributeAsProxy", container.JSReference, Id, "request");
+        IJSObjectReference helper = await helperTask.Value;
+        string objectId = await helper.InvokeAsync<string>("getProxyAttributeAsProxy", container.JSReference, Id, "request");
         return new Request(jSRuntime, Guid.Parse(objectId), container);
+    }
+
+    public async Task RespondWithAsync(Func<Task<Response>> r)
+    {
+        ResponsePromise rp = new ResponsePromise(r);
+        IJSObjectReference helper = await helperTask.Value;
+        await helper.InvokeVoidAsync("setupProxyPromise", container.JSReference, Id, "respondWith", rp.ObjRef);
     }
 }

@@ -7,6 +7,10 @@ export function arrayBuffer(buffer) {
     return bytes;
 }
 
+export function isUndefined(object) {
+    return object == undefined;
+}
+
 export function getNavigator() { return navigator; }
 
 var resolvers = {}
@@ -14,17 +18,9 @@ var resolvers = {}
 export function registerMessageListener(container) {
     container.addEventListener("message", async (e) => {
         var message = e.data
-        if (message.type == "ResolveGetProxyAttributeAsProxy") {
-            resolvers[message.id].call(this, message.object);
+        if (message.type.startsWith("Resolve")) {
+            console.log(resolvers[message.id]);
             console.log(message.object);
-        }
-        else if (message.type == "ResolveGetProxyAttribute") {
-            resolvers[message.id].call(this, message.object);
-        }
-        else if (message.type == "ResolveCallProxyMethodAsProxy") {
-            resolvers[message.id].call(this, message.object);
-        }
-        else if (message.type == "ResolveCallProxyMethod") {
             resolvers[message.id].call(this, message.object);
         }
         else {
@@ -55,10 +51,10 @@ export async function getProxyAttribute(container, id, attribute) {
     return await promise;
 }
 
-export async function callProxyMethodAsProxy(container, id, method) {
+export async function callProxyMethodAsProxy(container, id, method, args = []) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
-        var message = { type: "CallProxyMethodAsProxy", id: id, method: method };
+        var message = { type: "CallProxyMethodAsProxy", id: id, method: method, args: args };
         container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );
@@ -66,13 +62,39 @@ export async function callProxyMethodAsProxy(container, id, method) {
     return await promise;
 }
 
-export async function callProxyMethod(container, id, method) {
+export async function callProxyAsyncMethodAsProxy(container, id, method, args = []) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
-        var message = { type: "CallProxyMethod", id: id, method: method };
+        var message = { type: "CallProxyAsyncMethodAsProxy", id: id, method: method, args: args };
         container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );
     })
     return await promise;
+}
+
+export async function callProxyMethod(container, id, method, args = []) {
+    var promise = new Promise((resolve, _) => {
+        resolvers[id] = resolve;
+        var message = { type: "CallProxyMethod", id: id, method: method, args: args };
+        container.getRegistration().then(reg =>
+            reg.active.postMessage(message)
+        );
+    })
+    return await promise;
+}
+
+export async function setupProxyPromise(container, id, method, objRef) {
+    resolvers[id] = async resolveId => {
+        var objectId = await objRef.invokeMethodAsync("Invoke");
+        console.log(objectId);
+        var message = { type: "ResolveProxyPromise", id: id, resolveId: resolveId, objectId: objectId};
+        container.getRegistration().then(reg =>
+            reg.active.postMessage(message)
+        );
+    }
+    var message = { type: "SetupProxyPromise", id: id, method: method };
+    container.getRegistration().then(reg =>
+        reg.active.postMessage(message)
+    );
 }
