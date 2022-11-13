@@ -1,0 +1,16 @@
+﻿@page "/"
+
+@inject Logger logger
+
+<PageTitle>ServiceWorker</PageTitle>
+
+<h2>Status of Service Worker</h2>
+
+<textarea style="width:100%;height:40vh" disabled>@logger.Log</textarea>
+
+@code {
+    protected override void OnInitialized()
+    {
+        logger.OnChange = StateHasChanged;
+    }
+}

@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.ServiceWorker", "src\KristofferStrube.Blazor.ServiceWorker\KristofferStrube.Blazor.ServiceWorker.csproj", "{1ECE2A84-8928-44C5-BEDC-750686F1858A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "KristofferStrube.Blazor.ServiceWorker.WasmExample", "samples\KristofferStrube.Blazor.ServiceWorker.WasmExample\KristofferStrube.Blazor.ServiceWorker.WasmExample.csproj", "{D6600533-8EF0-4CA5-B133-3C3ACFA9AE8A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1ECE2A84-8928-44C5-BEDC-750686F1858A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1ECE2A84-8928-44C5-BEDC-750686F1858A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1ECE2A84-8928-44C5-BEDC-750686F1858A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1ECE2A84-8928-44C5-BEDC-750686F1858A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6600533-8EF0-4CA5-B133-3C3ACFA9AE8A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6600533-8EF0-4CA5-B133-3C3ACFA9AE8A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6600533-8EF0-4CA5-B133-3C3ACFA9AE8A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6600533-8EF0-4CA5-B133-3C3ACFA9AE8A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E0E34FF7-593E-45C3-A643-0B9E211789DE}
+	EndGlobalSection
+EndGlobal
