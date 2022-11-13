@@ -42,8 +42,8 @@ var app = builder.Build();
 var navigator = app.Services.GetRequiredService<INavigatorService>();
 var serviceWorker = await navigator.GetServiceWorkerAsync();
 
-await serviceWorker.RegisterAsync("./service-worker.js", (scope) => {
-    scope.OnActivate = () =>
+await serviceWorker.RegisterAsync("./service-worker.js", async (scope) => {
+    scope.OnActivate = async () =>
     {
         Console.WriteLine("We will do something when activating!");
     };
