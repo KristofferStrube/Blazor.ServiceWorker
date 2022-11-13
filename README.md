@@ -8,7 +8,7 @@
 # Introduction
 A Blazor wrapper for the [Service Workers](https://www.w3.org/TR/service-workers/) API.
 
-The API makes it possible to interact with and register a Service Worker that can control the fetching of resources for the website before any other contexts exist. This enables developers to make Progressive Web Apps (PWA). This project implements a wrapper around the API for Blazor so that we can easily and safely interact and create a Service Workers.
+The API makes it possible to interact with and register a Service Worker that can control the fetching of resources for the website before any other contexts exist. This enables developers to make Progressive Web Apps (PWA). This project implements a wrapper around the API for Blazor so that we can easily and safely interact with and create Service Workers.
 
 # Demo
 The sample project can be demoed at https://kristofferstrube.github.io/Blazor.ServiceWorker/
