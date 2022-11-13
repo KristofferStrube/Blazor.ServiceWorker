@@ -33,7 +33,9 @@ await serviceWorker.RegisterAsync("./service-worker.js", async (scope) => {
     };
     scope.OnFetch = async (fetchEvent) =>
     {
-        logger.WriteLine("We fetched!");
+        var request = await fetchEvent.GetRequestAsync();
+        var url = await request.GetURLAsync();
+        logger.WriteLine($"We fetched: {url}");
         await Task.CompletedTask;
     };
     scope.OnPush = async (pushEvent) =>

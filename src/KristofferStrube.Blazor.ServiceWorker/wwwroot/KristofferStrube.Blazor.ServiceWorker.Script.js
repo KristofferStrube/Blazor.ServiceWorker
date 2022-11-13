@@ -27,7 +27,7 @@ self.addEventListener("message", (e) => {
         resolvePost(message.type, message.id, objectId);
     }
     else if (message.type == "GetProxyAttribute") {
-        var obj = proxyDict[message.id][message.method];
+        var obj = proxyDict[message.id][message.attribute];
         resolvePost(message.type, message.id, obj);
     }
     else if (message.type == "CallProxyMethodAsProxy") {

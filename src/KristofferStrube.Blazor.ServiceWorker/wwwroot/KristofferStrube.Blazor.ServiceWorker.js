@@ -16,6 +16,7 @@ export function registerMessageListener(container) {
         var message = e.data
         if (message.type == "ResolveGetProxyAttributeAsProxy") {
             resolvers[message.id].call(this, message.object);
+            console.log(message.object);
         }
         else if (message.type == "ResolveGetProxyAttribute") {
             resolvers[message.id].call(this, message.object);
