@@ -37,7 +37,7 @@ export async function getProxyAttributeAsProxy(container, id, attribute) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "GetProxyAttributeAsProxy", id: id, attribute: attribute };
-        container.getRegistration("/").then(reg =>
+        container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );
     })
@@ -48,7 +48,7 @@ export async function getProxyAttribute(container, id, attribute) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "GetProxyAttribute", id: id, attribute: attribute };
-        container.getRegistration("_content/KristofferStrube.Blazor.ServiceWorker/").then(reg =>
+        container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );
     })
@@ -59,7 +59,7 @@ export async function callProxyMethodAsProxy(container, id, method) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "CallProxyMethodAsProxy", id: id, method: method };
-        container.getRegistration("_content/KristofferStrube.Blazor.ServiceWorker/").then(reg =>
+        container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );
     })
@@ -70,7 +70,7 @@ export async function callProxyMethod(container, id, method) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "CallProxyMethod", id: id, method: method };
-        container.getRegistration("_content/KristofferStrube.Blazor.ServiceWorker/").then(reg =>
+        container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );
     })
