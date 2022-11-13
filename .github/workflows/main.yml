@@ -23,7 +23,7 @@ jobs:
 
         # Generate the website
         - name: Publish
-          run: dotnet publish samples/KristofferStrube.Blazor.ServiceWorker.WasmExample/KristofferStrube.Blazor.FileAPI.ServiceWorker.WasmExample.csproj --configuration Release --output build
+          run: dotnet publish samples/KristofferStrube.Blazor.ServiceWorker.WasmExample/KristofferStrube.Blazor.ServiceWorker.WasmExample.csproj --configuration Release --output build
 
         # Publish the website
         - name: GitHub Pages action
