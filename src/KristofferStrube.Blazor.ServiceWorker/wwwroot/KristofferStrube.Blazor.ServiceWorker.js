@@ -36,7 +36,7 @@ export async function getProxyAttributeAsProxy(container, id, attribute) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "GetProxyAttributeAsProxy", id: id, attribute: attribute };
-        container.getRegistration("_content/KristofferStrube.Blazor.ServiceWorker/").then(reg =>
+        container.getRegistration("/").then(reg =>
             reg.active.postMessage(message)
         );
     })

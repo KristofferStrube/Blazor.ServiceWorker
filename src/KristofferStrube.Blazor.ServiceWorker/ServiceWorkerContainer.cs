@@ -30,13 +30,13 @@ public class ServiceWorkerContainer : BaseJSWrapper
         return new ServiceWorkerRegistration(jSRuntime, jSInstance);
     }
 
-    public async Task<ServiceWorkerRegistration> RegisterAsync(Func<ServiceWorkerGlobalScope, Task> script)
+    public async Task<ServiceWorkerRegistration> RegisterAsync(string scriptBootstrapperURL, Func<ServiceWorkerGlobalScope, Task> script)
     {
         Guid id = Guid.Empty;
         await ScriptManager.AddScriptAsync(id, jSRuntime, this, script);
         var helper = await helperTask.Value;
         await helper.InvokeVoidAsync("registerMessageListener", JSReference);
-        var jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("register", $"./_content/KristofferStrube.Blazor.ServiceWorker/KristofferStrube.Blazor.ServiceWorker.Script.js?id={id}", new RegistrationOptions() { Type = WorkerType.Module });
+        var jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("register", $"{scriptBootstrapperURL}?id={id}", new RegistrationOptions() { Type = WorkerType.Module });
         return new ServiceWorkerRegistration(jSRuntime, jSInstance);
     }
 

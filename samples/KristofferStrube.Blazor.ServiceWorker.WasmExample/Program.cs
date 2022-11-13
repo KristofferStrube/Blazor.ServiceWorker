@@ -19,7 +19,7 @@ var app = builder.Build();
 var navigator = app.Services.GetRequiredService<INavigatorService>();
 var logger = app.Services.GetRequiredService<Logger>();
 var serviceWorker = await navigator.GetServiceWorkerAsync();
-await serviceWorker.RegisterAsync(async (scope) => {
+await serviceWorker.RegisterAsync("./service-worker.js", async (scope) => {
     scope.OnInstall = async () =>
     {
         logger.WriteLine("We installed!");

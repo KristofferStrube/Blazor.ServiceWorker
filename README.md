@@ -19,6 +19,10 @@ On each page you can find the corresponding code for the example in the top righ
 
 On the *API Coverage Status* page you can get an overview over what parts of the API we support currently.
 
+# Getting Started
+A limitation of statically served Service Workers is that they only have access to the scope that the actual file belong in.
+So we need to place the Service Worker interop bootstrapper in the root of our project
+
 # Issues
 Feel free to open issues on the repository if you find any errors with the package or have wishes for features.
 
