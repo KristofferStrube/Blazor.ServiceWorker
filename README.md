@@ -24,7 +24,7 @@ A limitation of statically served Service Workers is that they only have access 
 So we need to place the Service Worker interop bootstrapper in the root of our project. A minified version of this can be found in the sample project at
 https://github.com/KristofferStrube/Blazor.ServiceWorker/blob/main/samples/KristofferStrube.Blazor.ServiceWorker.WasmExample/wwwroot/service-worker.js
 
-The original version that we have minified is at
+The in a minified version can be found here:
 https://github.com/KristofferStrube/Blazor.ServiceWorker/blob/main/src/KristofferStrube.Blazor.ServiceWorker/wwwroot/KristofferStrube.Blazor.ServiceWorker.Script.js
 
 Then once we have copied the script to the our project we can register a service worker like so:
@@ -41,8 +41,9 @@ var app = builder.Build();
 
 var navigator = app.Services.GetRequiredService<INavigatorService>();
 var serviceWorker = await navigator.GetServiceWorkerAsync();
+var rootPath = "";
 
-await serviceWorker.RegisterAsync("./service-worker.js", async (scope) => {
+await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope) => {
     scope.OnActivate = async () =>
     {
         Console.WriteLine("We will do something when activating!");
