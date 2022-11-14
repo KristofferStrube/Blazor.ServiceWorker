@@ -50,6 +50,11 @@ await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope)
                 return response;
             }
 
+            if (url.Contains("mountain.jpg"))
+            {
+                var snow = await scope.FetchAsync(new(url.Replace("mountain", "snow")));
+                return snow;
+            }
             var fetch = await scope.FetchAsync(new(request));
             if (await fetch.GetStatusAsync() == 404)
             {

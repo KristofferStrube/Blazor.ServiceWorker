@@ -13,4 +13,10 @@ public class Response : BaseJSServiceWorkerGlobalScopeProxy
         IJSObjectReference helper = await helperTask.Value;
         return await helper.InvokeAsync<ushort>("getProxyAttribute", container.JSReference, Id, "status");
     }
+
+    public async Task<string> GetURLAsync()
+    {
+        IJSObjectReference helper = await helperTask.Value;
+        return await helper.InvokeAsync<string>("getProxyAttribute", container.JSReference, Id, "url");
+    }
 }
