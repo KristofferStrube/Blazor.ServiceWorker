@@ -53,15 +53,9 @@ await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope)
 
             if (url.Contains("mountain.jpg"))
             {
-                var snow = await scope.FetchAsync(new(url.Replace("mountain", "snow")));
-                return snow;
+                return await scope.FetchAsync(new(url.Replace("mountain", "snow")));
             }
-            var fetch = await scope.FetchAsync(new(request));
-            if (await fetch.GetStatusAsync() == 404)
-            {
-                return await caches.MatchAsync(new("404.html"));
-            }
-            return fetch;
+            return await scope.FetchAsync(new(request));
         });
     };
     scope.OnPush = async (pushEvent) =>
