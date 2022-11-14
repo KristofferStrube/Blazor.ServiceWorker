@@ -30,6 +30,7 @@ self.onfetch = (event) => {
         event.request.url.startsWith("http://") ||
         event.request.url.startsWith("wss://") ||
         event.request.url.startsWith("ws://") ||
+        event.request.url.startsWith(root + "?") ||
         event.request.url.includes("/_framework/"))) {
         event.respondWith(handleFetch(event));
     }
