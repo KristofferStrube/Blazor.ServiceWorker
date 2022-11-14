@@ -58,7 +58,7 @@ await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope)
             var fetch = await scope.FetchAsync(new(request));
             if (await fetch.GetStatusAsync() == 404)
             {
-                return await caches.MatchAsync(new("empty.html"));
+                return await caches.MatchAsync(new("404.html"));
             }
             return fetch;
         });
