@@ -7,4 +7,16 @@ The below image should be a mountain, but the Service Worker will replace that w
 <br />
 <code>&lt;img src=&quot;images/mountain.jpg&quot; style=&quot;max-width:100%; max-height:30vh;&quot; /&gt;</code>
 <br />
-<img src="images/mountain.jpg" style="max-width:100%; max-height:30vh;" />
+@if (rendered)
+{
+    <img src="images/mountain.jpg" style="max-width:100%; max-height:30vh;" />
+}
+
+@code {
+    private bool rendered;
+
+    protected override Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) { rendered = true; StateHasChanged(); }
+    }
+}
