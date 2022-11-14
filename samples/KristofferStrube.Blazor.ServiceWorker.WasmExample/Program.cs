@@ -57,21 +57,19 @@ await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope)
             }
             return fetch;
         });
-        await Task.CompletedTask;
     };
     scope.OnPush = async (pushEvent) =>
     {
         logger.WriteLine("We pushed!");
         var messageData = await pushEvent.GetDataAsync();
         var array = await messageData.ArrayBufferAsync();
-        logger.WriteLine($"arrayBuffer length: {array.Length}");
         var blob = await messageData.BlobAsync();
-        logger.WriteLine($"blob size: {await blob.GetSizeAsync()}");
         var json = await messageData.JsonProxyAsync();
-        logger.WriteLine($"json object as string: {await json.AsStringAsync()}");
         var text = await messageData.TextAsync();
+        logger.WriteLine($"arrayBuffer length: {array.Length}");
+        logger.WriteLine($"blob size: {await blob.GetSizeAsync()}");
+        logger.WriteLine($"json object as string: {await json.AsStringAsync()}");
         logger.WriteLine($"text: {text}");
-        await Task.CompletedTask;
     };
     logger.WriteLine("We Initialized!");
     await Task.CompletedTask;
