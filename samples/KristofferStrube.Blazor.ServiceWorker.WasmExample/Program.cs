@@ -29,6 +29,7 @@ await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope)
         logger.WriteLine("We installed!");
         var caches = await scope.GetCachesAsync();
         var cache = await caches.OpenAsync("v1");
+        await cache.AddAsync("404.html");
         await cache.AddAsync("empty.html");
     };
     scope.OnActivate = async () =>
@@ -58,7 +59,7 @@ await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope)
             var fetch = await scope.FetchAsync(new(request));
             if (await fetch.GetStatusAsync() == 404)
             {
-                return await caches.MatchAsync(new("." + rootPath + "/404.html"));
+                return await caches.MatchAsync(new("404.html"));
             }
             return fetch;
         });
