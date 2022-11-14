@@ -15,7 +15,7 @@ The below image should be a mountain, but the Service Worker will replace that w
 @code {
     private bool rendered;
 
-    protected override Task OnAfterRenderAsync(bool firstRender)
+    protected override void OnAfterRender(bool firstRender)
     {
         if (firstRender) { rendered = true; StateHasChanged(); }
     }
