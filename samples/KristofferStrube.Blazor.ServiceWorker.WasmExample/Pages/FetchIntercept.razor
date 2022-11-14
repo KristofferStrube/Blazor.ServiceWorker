@@ -5,10 +5,6 @@
 <h2>Fetch Intercept</h2>
 The below image should be a mountain, but the Service Worker will replace that with an image of snow.
 <br />
-<code>&lt;img src=&quot;images/mountain.jpg?id=@id&quot; style=&quot;max-width:100%; max-height:30vh;&quot; /&gt;</code>
+<code>&lt;img src=&quot;images/mountain.jpg&quot; style=&quot;max-width:100%; max-height:30vh;&quot; /&gt;</code>
 <br />
-<img src="images/mountain.jpg?id=@id" style="max-width:100%; max-height:30vh;" />
-
-@code {
-    private string id = Guid.NewGuid().ToString().Substring(0,4);
-}
+<img src="images/mountain.jpg" style="max-width:100%; max-height:30vh;" />
