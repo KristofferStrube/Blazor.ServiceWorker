@@ -18,9 +18,12 @@ var app = builder.Build();
 
 var navigator = app.Services.GetRequiredService<INavigatorService>();
 var logger = app.Services.GetRequiredService<Logger>();
+var environment = app.Services.GetRequiredService<IWebAssemblyHostEnvironment>();
+
+var rootPath = environment.IsProduction() ? "/Blazor.ServiceWorker" : "";
 
 var serviceWorker = await navigator.GetServiceWorkerAsync();
-await serviceWorker.RegisterAsync("./service-worker.js", async (scope) => {
+await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope) => {
     scope.OnInstall = async () =>
     {
         logger.WriteLine("We installed!");

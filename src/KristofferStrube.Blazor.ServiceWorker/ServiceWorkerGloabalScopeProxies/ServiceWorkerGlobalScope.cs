@@ -29,7 +29,7 @@ public class ServiceWorkerGlobalScope : BaseJSServiceWorkerGlobalScopeProxy
     {
         await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        string objectId = await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Id, "fetch", new object[] { (input.type is RequestInfoType.Request ? input.request.Id.ToString() : input.stringRequest), init });
+        string objectId = await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Id, "fetch", new string[] { (input.type is RequestInfoType.Request ? input.request.Id.ToString() : input.stringRequest) });
         return new Response(jSRuntime, Guid.Parse(objectId), container);
     }
 }

@@ -19,8 +19,6 @@ export function registerMessageListener(container) {
     container.addEventListener("message", async (e) => {
         var message = e.data
         if (message.type.startsWith("Resolve")) {
-            console.log(resolvers[message.id]);
-            console.log(message.object);
             resolvers[message.id].call(this, message.object);
         }
         else {
@@ -84,16 +82,8 @@ export async function callProxyMethod(container, id, method, args = []) {
     return await promise;
 }
 
-export async function setupProxyPromise(container, id, method, objRef) {
-    resolvers[id] = async resolveId => {
-        var objectId = await objRef.invokeMethodAsync("Invoke");
-        console.log(objectId);
-        var message = { type: "ResolveProxyPromise", id: id, resolveId: resolveId, objectId: objectId};
-        container.getRegistration().then(reg =>
-            reg.active.postMessage(message)
-        );
-    }
-    var message = { type: "SetupProxyPromise", id: id, method: method };
+export async function resolveRespondWith(container, id, args) {
+    var message = { type: "CallResolveRespondWith", id: id, args: args };
     container.getRegistration().then(reg =>
         reg.active.postMessage(message)
     );

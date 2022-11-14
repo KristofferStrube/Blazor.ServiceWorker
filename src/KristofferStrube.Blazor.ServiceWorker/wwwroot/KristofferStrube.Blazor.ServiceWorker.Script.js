@@ -2,6 +2,7 @@ const params = new Proxy(new URLSearchParams(self.location.search), {
     get: (searchParams, prop) => searchParams.get(prop),
 });
 let id = params.id;
+let root = self.location.origin + params.root + "/";
 
 let proxyDict = {};
 proxyDict[id] = self;
@@ -15,15 +16,34 @@ self.onactivate = (event) => {
     invokePost("Activate", generateGUID(), event);
 }
 self.onfetch = (event) => {
-    if (event.request.url == "https://localhost:7029/") {
-        var id = generateGUID();
-        var promise = new Promise((resolve, _) => {
-            resolvers[id] = resolve;
-        });
-        invokePost("Fetch", id, event);
-        event.respondWith(promise)
+    var skippedURLs = [
+        root,
+        root + "_vs/browserLink",
+        root + "css/bootstrap/bootstrap.min.css",
+        root + "css/app.css",
+        root + "KristofferStrube.Blazor.ServiceWorker.WasmExample.styles.css",
+        root + "css/open-iconic/font/css/open-iconic-bootstrap.min.css",
+        root + "favicon.png",
+        root + "_content/KristofferStrube.Blazor.ServiceWorker/KristofferStrube.Blazor.ServiceWorker.js",
+    ]
+    if (!(skippedURLs.includes(event.request.url) ||
+        event.request.url.startsWith("http://") ||
+        event.request.url.startsWith("wss://") ||
+        event.request.url.startsWith("ws://") ||
+        event.request.url.includes("/_framework/"))) {
+        event.respondWith(handleFetch(event));
     }
 }
+
+async function handleFetch(event) {
+    var id = generateGUID();
+    var promise = new Promise((resolve, _) => {
+        resolvers[id] = resolve;
+    });
+    invokePost("Fetch", id, event);
+    return await promise;
+}
+
 self.onpush = (event) => {
     invokePost("Push", generateGUID(), event);
 }
@@ -47,13 +67,14 @@ self.addEventListener("message", (e) => {
             }
         }
         if (message.type == "CallProxyMethodAsProxy") {
-            var obj = proxyDict[message.id][message.method].call(proxyDict[message.id], message.args);
+            var obj = proxyDict[message.id][message.method].apply(proxyDict[message.id], message.args);
             var objectId = generateGUID();
             proxyDict[objectId] = obj;
             resolvePost(message.type, message.id, objectId);
         }
         else if (message.type == "CallProxyAsyncMethodAsProxy") {
-            proxyDict[message.id][message.method].call(proxyDict[message.id], message.args).then(obj => {
+            proxyDict[message.id][message.method].apply(proxyDict[message.id], message.args).then(obj => {
+
                 var objectId = generateGUID();
                 if (obj == undefined) {
                     objectId = undefined;
@@ -65,16 +86,12 @@ self.addEventListener("message", (e) => {
             });
         }
         else if (message.type == "CallProxyMethod") {
-            var obj = proxyDict[message.id][message.method].call(proxyDict[message.id], message.args);
+            var obj = proxyDict[message.id][message.method].apply(proxyDict[message.id], message.args);
             resolvePost(message.type, message.id, obj);
         }
-    }
-    else if (message.type == "SetupProxyPromise") {
-        var resolveId = generateGUID();
-        resolvePost(message.type, message.id, resolveId);
-    }
-    else if (message.type == "ResolveProxyPromise") {
-        resolvers[message.id].call(this, proxyDict[message.objectId]);
+        else if (message.type == "CallResolveRespondWith") {
+            resolvers[message.id].apply(this, message.args);
+        }
     }
 });
 

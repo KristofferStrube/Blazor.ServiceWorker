@@ -12,7 +12,7 @@ public class CacheStorage : BaseJSServiceWorkerGlobalScopeProxy
     {
         await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        string objectId = await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Id, "match", new object[] { (request.type is RequestInfoType.Request ? request.request.Id : request.stringRequest), options });
+        string objectId = await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Id, "match", new string[] { (request.type is RequestInfoType.Request ? request.request.Id.ToString() : request.stringRequest) });
         bool isUndefined = await helper.InvokeAsync<bool>("isUndefined", objectId);
         if (isUndefined)
         {
