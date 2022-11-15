@@ -1,4 +1,5 @@
 ﻿using KristofferStrube.Blazor.FileAPI;
+using KristofferStrube.Blazor.ServiceWorker.Extensions;
 using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
@@ -12,27 +13,27 @@ public class PushMessageData : BaseJSServiceWorkerGlobalScopeProxy
     public async Task<byte[]> ArrayBufferAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
-        IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("callProxyMethod", container.JSReference, Id, "arrayBuffer");
+        IJSObjectReference jSInstance = await helper.CallProxyMethod<IJSObjectReference>(container, Id, "arrayBuffer");
         return await helper.InvokeAsync<byte[]>("arrayBuffer", jSInstance);
     }
 
     public async Task<Blob> BlobAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
-        IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("callProxyMethod", container.JSReference, Id, "blob");
+        IJSObjectReference jSInstance = await helper.CallProxyMethod<IJSObjectReference>(container, Id, "blob");
         return Blob.Create(jSRuntime, jSInstance);
     }
 
     public async Task<JsonProxy> JsonProxyAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
-        string objectId = await helper.InvokeAsync<string>("callProxyMethodAsProxy", container.JSReference, Id, "json");
-        return new JsonProxy(jSRuntime, Guid.Parse(objectId), container);
+        Guid objectId = await helper.CallProxyMethodAsProxy(container, Id, "json");
+        return new JsonProxy(jSRuntime, objectId, container);
     }
 
     public async Task<string> TextAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
-        return await helper.InvokeAsync<string>("callProxyMethod", container.JSReference, Id, "text");
+        return await helper.CallProxyMethod<string>(container, Id, "text");
     }
 }

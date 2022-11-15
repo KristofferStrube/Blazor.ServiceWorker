@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
+using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
@@ -10,8 +11,7 @@ public class Request : BaseJSServiceWorkerGlobalScopeProxy
 
     public async Task<string> GetURLAsync()
     {
-        await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        return await helper.InvokeAsync<string>("getProxyAttribute", container.JSReference, Id, "url");
+        return await helper.GetProxyAttribute<string>(container, Id, "url");
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
+using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
@@ -8,10 +9,10 @@ public class Cache : BaseJSServiceWorkerGlobalScopeProxy
     {
     }
 
-    public async Task AddAsync(string request)
+    public async Task AddAsync(RequestInfo request)
     {
         await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        await helper.InvokeVoidAsync("callProxyAsyncMethodAsProxy", container.JSReference, Id, "add", new string[] { request });
+        await helper.CallProxyAsyncMethodAsProxy(container, Id, "add", new string[] { request });
     }
 }

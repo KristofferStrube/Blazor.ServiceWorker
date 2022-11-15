@@ -1,4 +1,5 @@
-﻿using KristofferStrube.Blazor.ServiceWorker.Options;
+﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
+using KristofferStrube.Blazor.ServiceWorker.Options;
 using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
@@ -19,17 +20,15 @@ public class ServiceWorkerGlobalScope : BaseJSServiceWorkerGlobalScopeProxy
 
     public async Task<CacheStorage> GetCachesAsync()
     {
-        await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        string objectId = await helper.InvokeAsync<string>("getProxyAttributeAsProxy", container.JSReference, Id, "caches");
-        return new CacheStorage(jSRuntime, Guid.Parse(objectId), container);
+        Guid objectId = await helper.GetProxyAttributeAsProxy(container, Id, "caches");
+        return new CacheStorage(jSRuntime, objectId, container);
     }
 
     public async Task<Response> FetchAsync(RequestInfo input, RequestInit? init = null)
     {
-        await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        string objectId = await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Id, "fetch", new string[] { (input.type is RequestInfoType.Request ? input.request.Id.ToString() : input.stringRequest) });
-        return new Response(jSRuntime, Guid.Parse(objectId), container);
+        Guid objectId = await helper.CallProxyAsyncMethodAsProxy(container, Id, "fetch", new object[] { (string)input, init });
+        return new Response(jSRuntime, objectId, container);
     }
 }

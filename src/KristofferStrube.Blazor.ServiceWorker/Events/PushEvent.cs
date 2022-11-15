@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
+using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
@@ -12,7 +13,7 @@ public class PushEvent : BaseJSServiceWorkerGlobalScopeProxy
     {
         await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        string objectId = await helper.InvokeAsync<string>("getProxyAttributeAsProxy", container.JSReference, Id, "data");
-        return new PushMessageData(jSRuntime, Guid.Parse(objectId), container);
+        Guid objectId = await helper.GetProxyAttributeAsProxy(container, Id, "data");
+        return new PushMessageData(jSRuntime, objectId, container);
     }
 }

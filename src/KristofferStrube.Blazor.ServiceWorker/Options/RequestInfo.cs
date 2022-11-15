@@ -17,6 +17,21 @@ public class RequestInfo
         this.stringRequest = request;
         type = RequestInfoType.String;
     }
+
+    public static implicit operator RequestInfo(Request r)
+    {
+        return new(r);
+    }
+
+    public static implicit operator RequestInfo(string r)
+    {
+        return new(r);
+    }
+
+    public static implicit operator string(RequestInfo ri)
+    {
+        return ri.type is RequestInfoType.Request ? ri.request.Id.ToString() : ri.stringRequest;
+    }
 }
 
 public enum RequestInfoType

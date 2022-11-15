@@ -52,13 +52,13 @@ self.onpush = (event) => {
 self.addEventListener("message", (e) => {
     var message = e.data;
     if (message.type == "GetProxyAttributeAsProxy") {
-        var obj = proxyDict[message.id][message.attribute];
+        var obj = proxyDict[message.objectId][message.attribute];
         var objectId = generateGUID();
         proxyDict[objectId] = obj;
         resolvePost(message.type, message.id, objectId);
     }
     else if (message.type == "GetProxyAttribute") {
-        var obj = proxyDict[message.id][message.attribute];
+        var obj = proxyDict[message.objectId][message.attribute];
         resolvePost(message.type, message.id, obj);
     }
     else if (message.type.startsWith("Call")) {
@@ -68,13 +68,13 @@ self.addEventListener("message", (e) => {
             }
         }
         if (message.type == "CallProxyMethodAsProxy") {
-            var obj = proxyDict[message.id][message.method].apply(proxyDict[message.id], message.args);
+            var obj = proxyDict[message.objectId][message.method].apply(proxyDict[message.objectId], message.args);
             var objectId = generateGUID();
             proxyDict[objectId] = obj;
             resolvePost(message.type, message.id, objectId);
         }
         else if (message.type == "CallProxyAsyncMethodAsProxy") {
-            proxyDict[message.id][message.method].apply(proxyDict[message.id], message.args).then(obj => {
+            proxyDict[message.objectId][message.method].apply(proxyDict[message.objectId], message.args).then(obj => {
 
                 var objectId = generateGUID();
                 if (obj == undefined) {
@@ -87,7 +87,7 @@ self.addEventListener("message", (e) => {
             });
         }
         else if (message.type == "CallProxyMethod") {
-            var obj = proxyDict[message.id][message.method].apply(proxyDict[message.id], message.args);
+            var obj = proxyDict[message.objectId][message.method].apply(proxyDict[message.objectId], message.args);
             resolvePost(message.type, message.id, obj);
         }
         else if (message.type == "CallResolveRespondWith") {

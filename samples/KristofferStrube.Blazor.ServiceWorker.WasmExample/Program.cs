@@ -45,7 +45,7 @@ await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope)
         logger.WriteLine($"We fetched: {url}");
         await fetchEvent.RespondWithAsync(async () =>
         {
-            var response = await caches.MatchAsync(new(request));
+            var response = await caches.MatchAsync(request);
             if (response is not null)
             {
                 return response;
@@ -53,9 +53,9 @@ await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope)
 
             if (url.Contains("mountain.jpg"))
             {
-                return await scope.FetchAsync(new(url.Replace("mountain", "snow")));
+                return await scope.FetchAsync(url.Replace("mountain", Random.Shared.Next(2) is 1 ? "snow" : "lighthouse"));
             }
-            return await scope.FetchAsync(new(request));
+            return await scope.FetchAsync(request);
         });
     };
     scope.OnPush = async (pushEvent) =>

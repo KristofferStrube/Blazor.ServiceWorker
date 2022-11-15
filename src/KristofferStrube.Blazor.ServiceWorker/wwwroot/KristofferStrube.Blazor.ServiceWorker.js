@@ -20,6 +20,7 @@ export function registerMessageListener(container) {
         var message = e.data
         if (message.type.startsWith("Resolve")) {
             resolvers[message.id].call(this, message.object);
+            delete resolvers[message.id];
         }
         else {
             DotNet.invokeMethodAsync("KristofferStrube.Blazor.ServiceWorker", `InvokeOn${message.type}Async`, message.id, message.eventId);
@@ -27,10 +28,21 @@ export function registerMessageListener(container) {
     })
 }
 
-export async function getProxyAttributeAsProxy(container, id, attribute) {
+export async function getProxyAttributeAsProxy(container, id, objectId, attribute) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
-        var message = { type: "GetProxyAttributeAsProxy", id: id, attribute: attribute };
+        var message = { type: "GetProxyAttributeAsProxy", id: id, objectId: objectId, attribute: attribute };
+        container.getRegistration().then(reg => {
+            reg.active.postMessage(message)
+        });
+    })
+    return await promise;
+}
+
+export async function getProxyAttribute(container, id, objectId, attribute) {
+    var promise = new Promise((resolve, _) => {
+        resolvers[id] = resolve;
+        var message = { type: "GetProxyAttribute", id: id, objectId: objectId, attribute: attribute };
         container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );
@@ -38,10 +50,10 @@ export async function getProxyAttributeAsProxy(container, id, attribute) {
     return await promise;
 }
 
-export async function getProxyAttribute(container, id, attribute) {
+export async function callProxyMethodAsProxy(container, id, objectId, method, args = []) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
-        var message = { type: "GetProxyAttribute", id: id, attribute: attribute };
+        var message = { type: "CallProxyMethodAsProxy", id: id, objectId: objectId, method: method, args: args };
         container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );
@@ -49,10 +61,10 @@ export async function getProxyAttribute(container, id, attribute) {
     return await promise;
 }
 
-export async function callProxyMethodAsProxy(container, id, method, args = []) {
+export async function callProxyAsyncMethodAsProxy(container, id, objectId, method, args = []) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
-        var message = { type: "CallProxyMethodAsProxy", id: id, method: method, args: args };
+        var message = { type: "CallProxyAsyncMethodAsProxy", id: id, objectId: objectId, method: method, args: args };
         container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );
@@ -60,21 +72,10 @@ export async function callProxyMethodAsProxy(container, id, method, args = []) {
     return await promise;
 }
 
-export async function callProxyAsyncMethodAsProxy(container, id, method, args = []) {
+export async function callProxyMethod(container, id, objectId, method, args = []) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
-        var message = { type: "CallProxyAsyncMethodAsProxy", id: id, method: method, args: args };
-        container.getRegistration().then(reg =>
-            reg.active.postMessage(message)
-        );
-    })
-    return await promise;
-}
-
-export async function callProxyMethod(container, id, method, args = []) {
-    var promise = new Promise((resolve, _) => {
-        resolvers[id] = resolve;
-        var message = { type: "CallProxyMethod", id: id, method: method, args: args };
+        var message = { type: "CallProxyMethod", id: id, objectId: objectId, method: method, args: args };
         container.getRegistration().then(reg =>
             reg.active.postMessage(message)
         );

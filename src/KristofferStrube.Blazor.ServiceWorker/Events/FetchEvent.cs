@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
+using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
@@ -12,8 +13,8 @@ public class FetchEvent : BaseJSServiceWorkerGlobalScopeProxy
     {
         await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        string objectId = await helper.InvokeAsync<string>("getProxyAttributeAsProxy", container.JSReference, Id, "request");
-        return new Request(jSRuntime, Guid.Parse(objectId), container);
+        Guid objectId = await helper.GetProxyAttributeAsProxy(container, Id, "request");
+        return new Request(jSRuntime, objectId, container);
     }
 
     public async Task RespondWithAsync(Func<Task<Response>> r)

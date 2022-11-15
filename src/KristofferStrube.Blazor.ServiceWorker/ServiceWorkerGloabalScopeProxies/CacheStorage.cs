@@ -1,4 +1,5 @@
-﻿using Microsoft.JSInterop;
+﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
+using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
@@ -12,20 +13,19 @@ public class CacheStorage : BaseJSServiceWorkerGlobalScopeProxy
     {
         await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        string objectId = await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Id, "match", new string[] { (request.type is RequestInfoType.Request ? request.request.Id.ToString() : request.stringRequest) });
-        bool isUndefined = await helper.InvokeAsync<bool>("isUndefined", objectId);
-        if (isUndefined)
+        Guid? objectId = await helper.CallProxyAsyncMethodAsNullableProxy(container, Id, "match", new object[] { (string)request, options });
+        if (objectId is Guid id)
         {
-            return null;
+            return new Response(jSRuntime, id, container);
         }
-        return new Response(jSRuntime, Guid.Parse(objectId), container);
+        return null;
     }
 
     public async Task<Cache> OpenAsync(string cacheName)
     {
         await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        string objectId = await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Id, "open", new object[] { cacheName });
-        return new Cache(jSRuntime, Guid.Parse(objectId), container);
+        Guid objectId = await helper.CallProxyAsyncMethodAsProxy(container, Id, "open", new object[] { cacheName });
+        return new Cache(jSRuntime, objectId, container);
     }
 }
