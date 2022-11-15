@@ -1,0 +1,25 @@
+﻿@page "/Registration"
+
+@inject INavigatorService NavigatorService
+
+<PageTitle>ServiceWorker - Registration</PageTitle>
+
+<h2>Registration</h2>
+
+<button class="btn btn-primary" @onclick="() => registration?.UnregisterAsync()">Unregister</button>
+<button class="btn btn-primary" @onclick="() => registration?.UpdateAsync()">Update</button>
+
+@code {
+    IServiceWorkerRegistration registration;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        var container = await NavigatorService.GetServiceWorkerAsync();
+        registration = await container.GetReadyAsync();
+        registration.OnUpdateFound = async () =>
+        {
+            Console.WriteLine("UpdateFound");
+        };
+    }
+}

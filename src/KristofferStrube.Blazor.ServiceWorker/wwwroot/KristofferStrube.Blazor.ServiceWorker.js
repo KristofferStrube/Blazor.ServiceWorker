@@ -1,6 +1,14 @@
-export function getAttribute(object, attribute) { return object[attribute]; }
+export function isAttributeNull(object, attribute) {
+    return object[attribute] == null;
+}
 
-export async function getAttributeAsync(object, attribute) { return await object[attribute]; }
+export function getAttribute(object, attribute) {
+    return object[attribute];
+}
+
+export async function getAttributeAsync(object, attribute) {
+    return await object[attribute];
+}
 
 export function arrayBuffer(buffer) {
     var bytes = new Uint8Array(buffer);
@@ -9,6 +17,10 @@ export function arrayBuffer(buffer) {
 
 export function isUndefined(object) {
     return object == undefined;
+}
+
+export function registerEventHandlerAsync(objRef, jSInstance, eventName, invokeMethod) {
+    jSInstance.addEventListener(eventName, (e) => objRef.invokeMethodAsync(invokeMethod, DotNet.createJSObjectReference(e)));
 }
 
 export function getNavigator() { return navigator; }

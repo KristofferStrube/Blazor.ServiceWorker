@@ -20,9 +20,12 @@ public class ServiceWorkerGlobalScope : BaseJSServiceWorkerGlobalScopeProxy
 
     public async Task<CacheStorage> GetCachesAsync()
     {
+        return await this.MemoizedTask(async () =>
+    {
         IJSObjectReference helper = await helperTask.Value;
         Guid objectId = await helper.GetProxyAttributeAsProxy(container, Id, "caches");
         return new CacheStorage(jSRuntime, objectId, container);
+    });
     }
 
     public async Task<Response> FetchAsync(RequestInfo input, RequestInit? init = null)

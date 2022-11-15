@@ -9,15 +9,24 @@ public class RequestInfo
         this.request = request;
     }
 
-    public static implicit operator RequestInfo(Request request) => new(request);
-
-    public static implicit operator RequestInfo(string request) => new(request);
-
-    public static implicit operator string(RequestInfo ri) => ri.request switch
+    public static implicit operator RequestInfo(Request request)
     {
-        Request request => request.Id.ToString(),
-        string request => request,
-        _ => throw new InvalidCastException("Constructed with wrong type.")
-    };
+        return new(request);
+    }
+
+    public static implicit operator RequestInfo(string request)
+    {
+        return new(request);
+    }
+
+    public static implicit operator string(RequestInfo ri)
+    {
+        return ri.request switch
+        {
+            Request request => request.Id.ToString(),
+            string request => request,
+            _ => throw new InvalidCastException("Constructed with wrong type.")
+        };
+    }
 }
 

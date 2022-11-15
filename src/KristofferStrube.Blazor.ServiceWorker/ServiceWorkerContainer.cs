@@ -11,12 +11,12 @@ public class ServiceWorkerContainer : BaseJSWrapper
     public async Task<ServiceWorker?> GetControllerAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
-        IJSObjectReference? jSInstance = await helper.InvokeAsync<IJSObjectReference?>("getAttribute", JSReference, "controller");
-        if (jSInstance is null)
+        if (await helper.InvokeAsync<bool>("isAttributeNull", JSReference, "controller"))
         {
             return null;
         }
 
+        IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", JSReference, "controller");
         return new ServiceWorker(jSRuntime, jSInstance);
     }
 
