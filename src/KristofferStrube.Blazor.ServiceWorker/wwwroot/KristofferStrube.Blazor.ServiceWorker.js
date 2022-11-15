@@ -39,6 +39,17 @@ export async function getProxyAttributeAsProxy(container, id, objectId, attribut
     return await promise;
 }
 
+export async function getProxyAsyncAttributeAsProxy(container, id, objectId, attribute) {
+    var promise = new Promise((resolve, _) => {
+        resolvers[id] = resolve;
+        var message = { type: "GetProxyAsyncAttributeAsProxy", id: id, objectId: objectId, attribute: attribute };
+        container.getRegistration().then(reg => {
+            reg.active.postMessage(message)
+        });
+    })
+    return await promise;
+}
+
 export async function getProxyAttribute(container, id, objectId, attribute) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;

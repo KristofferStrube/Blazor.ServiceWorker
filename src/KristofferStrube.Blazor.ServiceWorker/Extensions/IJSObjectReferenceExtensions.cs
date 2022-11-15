@@ -1,6 +1,4 @@
 ﻿using Microsoft.JSInterop;
-using System;
-using System.ComponentModel;
 
 namespace KristofferStrube.Blazor.ServiceWorker.Extensions;
 
@@ -9,6 +7,10 @@ internal static class IJSObjectReferenceExtensions
     internal static async Task<Guid> GetProxyAttributeAsProxy(this IJSObjectReference helper, ServiceWorkerContainer container, Guid objectid, string attribute)
     {
         return Guid.Parse(await helper.InvokeAsync<string>("getProxyAttributeAsProxy", container.JSReference, Guid.NewGuid(), objectid, attribute));
+    }
+    internal static async Task<Guid> GetProxyAsyncAttributeAsProxy(this IJSObjectReference helper, ServiceWorkerContainer container, Guid objectid, string attribute)
+    {
+        return Guid.Parse(await helper.InvokeAsync<string>("getProxyAsyncAttributeAsProxy", container.JSReference, Guid.NewGuid(), objectid, attribute));
     }
     internal static async Task<T> GetProxyAttribute<T>(this IJSObjectReference helper, ServiceWorkerContainer container, Guid objectid, string attribute)
     {
@@ -27,7 +29,7 @@ internal static class IJSObjectReferenceExtensions
     internal static async Task<Guid?> CallProxyAsyncMethodAsNullableProxy(this IJSObjectReference helper, ServiceWorkerContainer container, Guid objectid, string method, object[]? args = null)
     {
         args ??= Array.Empty<object>();
-        var proxyObjectId = await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Guid.NewGuid(), objectid, method, args);
+        string proxyObjectId = await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Guid.NewGuid(), objectid, method, args);
         bool isUndefined = await helper.InvokeAsync<bool>("isUndefined", proxyObjectId);
         if (isUndefined)
         {

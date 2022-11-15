@@ -57,6 +57,13 @@ self.addEventListener("message", (e) => {
         proxyDict[objectId] = obj;
         resolvePost(message.type, message.id, objectId);
     }
+    else if (message.type == "GetProxyAsyncAttributeAsProxy") {
+        proxyDict[message.objectId][message.attribute].then(obj => {
+            var objectId = generateGUID();
+            proxyDict[objectId] = obj;
+            resolvePost(message.type, message.id, objectId);
+        });
+    }
     else if (message.type == "GetProxyAttribute") {
         var obj = proxyDict[message.objectId][message.attribute];
         resolvePost(message.type, message.id, obj);

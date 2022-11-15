@@ -2,40 +2,22 @@
 
 public class RequestInfo
 {
-    internal readonly Request request;
-    internal readonly string stringRequest;
-    internal readonly RequestInfoType type;
+    internal readonly object request;
 
-    public RequestInfo(Request request)
+    internal RequestInfo(object request)
     {
         this.request = request;
-        type = RequestInfoType.Request;
     }
 
-    public RequestInfo(string request)
-    {
-        this.stringRequest = request;
-        type = RequestInfoType.String;
-    }
+    public static implicit operator RequestInfo(Request request) => new(request);
 
-    public static implicit operator RequestInfo(Request r)
-    {
-        return new(r);
-    }
+    public static implicit operator RequestInfo(string request) => new(request);
 
-    public static implicit operator RequestInfo(string r)
+    public static implicit operator string(RequestInfo ri) => ri.request switch
     {
-        return new(r);
-    }
-
-    public static implicit operator string(RequestInfo ri)
-    {
-        return ri.type is RequestInfoType.Request ? ri.request.Id.ToString() : ri.stringRequest;
-    }
+        Request request => request.Id.ToString(),
+        string request => request,
+        _ => throw new InvalidCastException("Constructed with wrong type.")
+    };
 }
 
-public enum RequestInfoType
-{
-    Request,
-    String
-}

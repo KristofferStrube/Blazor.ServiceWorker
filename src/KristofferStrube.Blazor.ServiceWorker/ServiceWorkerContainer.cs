@@ -20,20 +20,20 @@ public class ServiceWorkerContainer : BaseJSWrapper
         return new ServiceWorker(jSRuntime, jSInstance);
     }
 
-    public async Task<ServiceWorkerRegistration> GetReadyAsync()
+    public async Task<IServiceWorkerRegistration> GetReadyAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
         IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttributeAsync", JSReference, "ready");
         return new ServiceWorkerRegistration(jSRuntime, jSInstance);
     }
 
-    public async Task<ServiceWorkerRegistration> RegisterAsync(string scriptURL, RegistrationOptions? options = null)
+    public async Task<IServiceWorkerRegistration> RegisterAsync(string scriptURL, RegistrationOptions? options = null)
     {
         IJSObjectReference jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("register", scriptURL, options);
         return new ServiceWorkerRegistration(jSRuntime, jSInstance);
     }
 
-    public async Task<ServiceWorkerRegistration> RegisterAsync(string scriptBootstrapperURL, string rootPath, Func<ServiceWorkerGlobalScope, Task> script)
+    public async Task<IServiceWorkerRegistration> RegisterAsync(string scriptBootstrapperURL, string rootPath, Func<ServiceWorkerGlobalScope, Task> script)
     {
         Guid id = Guid.Empty;
         await ScriptManager.AddScriptAsync(id, jSRuntime, this, script);
@@ -43,7 +43,7 @@ public class ServiceWorkerContainer : BaseJSWrapper
         return new ServiceWorkerRegistration(jSRuntime, jSInstance);
     }
 
-    public async Task<ServiceWorkerRegistration> GetRegistrationAsync(string clientURL = "")
+    public async Task<IServiceWorkerRegistration> GetRegistrationAsync(string clientURL = "")
     {
         IJSObjectReference jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("getRegistration", clientURL);
         return new ServiceWorkerRegistration(jSRuntime, jSInstance);
