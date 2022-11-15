@@ -5,13 +5,23 @@
 <h2>Fetch Intercept</h2>
 The below images should be mountains, but the Service Worker will replace each with either an image of snow or a lighthouse.
 <br />
+<button class="btn btn-primary" @onclick="() => StateHasChanged()">Generate New Image Id's</button>
 <code>
-<pre>&lt;img src=&quot;images/mountain.jpg?id=1&quot; style=&quot;max-width:45%; max-height:30vh;&quot; /&gt;
-&lt;img src=&quot;images/mountain.jpg?id=2&quot; style=&quot;max-width:45%; max-height:30vh;&quot; /&gt;
-&lt;img src=&quot;images/mountain.jpg?id=3&quot; style=&quot;max-width:45%; max-height:30vh;&quot; /&gt;
-&lt;img src=&quot;images/mountain.jpg?id=4&quot; style=&quot;max-width:45%; max-height:30vh;&quot; /&gt;</pre>
+<pre>&lt;img src=&quot;images/mountain.jpg?id=@ids[0]&quot; style=&quot;max-width:45%; max-height:30vh;&quot; /&gt;
+&lt;img src=&quot;images/mountain.jpg?id=@ids[1]&quot; style=&quot;max-width:45%; max-height:30vh;&quot; /&gt;
+&lt;img src=&quot;images/mountain.jpg?id=@ids[2]&quot; style=&quot;max-width:45%; max-height:30vh;&quot; /&gt;
+&lt;img src=&quot;images/mountain.jpg?id=@ids[3]&quot; style=&quot;max-width:45%; max-height:30vh;&quot; /&gt;</pre>
 </code>
-<img src="images/mountain.jpg?id=1" style="max-width:45%; max-height:30vh;" />
-<img src="images/mountain.jpg?id=2" style="max-width:45%; max-height:30vh;" />
-<img src="images/mountain.jpg?id=3" style="max-width:45%; max-height:30vh;" />
-<img src="images/mountain.jpg?id=4" style="max-width:45%; max-height:30vh;" />
+<img src="images/mountain.jpg?id=@ids[0]" style="max-width:45%; max-height:30vh;" />
+<img src="images/mountain.jpg?id=@ids[1]" style="max-width:45%; max-height:30vh;" />
+<img src="images/mountain.jpg?id=@ids[2]" style="max-width:45%; max-height:30vh;" />
+<img src="images/mountain.jpg?id=@ids[3]" style="max-width:45%; max-height:30vh;" />
+
+@code {
+    string[] ids = Enumerable.Range(0, 4).Select(_ => Guid.NewGuid().ToString().Substring(0, 4)).ToArray();
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        ids = Enumerable.Range(0, 4).Select(_ => Guid.NewGuid().ToString().Substring(0, 4)).ToArray();
+    }
+}

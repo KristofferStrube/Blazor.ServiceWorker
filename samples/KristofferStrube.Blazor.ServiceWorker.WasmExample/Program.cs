@@ -53,7 +53,8 @@ await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope)
 
             if (url.Contains("mountain.jpg"))
             {
-                return await scope.FetchAsync(url.Replace("mountain", Random.Shared.Next(2) is 1 ? "snow" : "lighthouse"));
+                var replacement = Random.Shared.Next(2) is 1 ? "snow" : "lighthouse";
+                return await scope.FetchAsync(url.Replace("mountain", replacement));
             }
             return await scope.FetchAsync(request);
         });
