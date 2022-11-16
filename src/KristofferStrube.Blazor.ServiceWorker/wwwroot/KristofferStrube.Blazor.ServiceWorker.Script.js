@@ -69,14 +69,13 @@ self.addEventListener("message", (e) => {
         resolvePost(message.type, message.id, obj);
     }
     else if (message.type.startsWith("Call")) {
+        if (proxyDict[message.objectId] == undefined && resolvers[message.id] == undefined) {
+            return;
+        }
         for (let i = 0; i < message.args.length; i++) {
             if (message.args[i] != null && message.args[i].length == 36 && message.args[i].charAt(8) == '-') {
                 message.args[i] = proxyDict[message.args[i]];
             }
-        }
-        if (proxyDict[message.objectId] == undefined && resolvers[message.id] == undefined) {
-            resolvePost(message.type, message.id, undefined);
-            return;
         }
         if (message.type == "CallProxyMethodAsProxy") {
             var obj = proxyDict[message.objectId][message.method].apply(proxyDict[message.objectId], message.args);
@@ -101,7 +100,7 @@ self.addEventListener("message", (e) => {
             var obj = proxyDict[message.objectId][message.method].apply(proxyDict[message.objectId], message.args);
             resolvePost(message.type, message.id, obj);
         }
-        else if (message.type == "CallResolveRespondWith") {
+        else if (message.type == "CallResolve") {
             resolvers[message.id].apply(this, message.args);
         }
     }

@@ -44,9 +44,10 @@ export async function getProxyAttributeAsProxy(container, id, objectId, attribut
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "GetProxyAttributeAsProxy", id: id, objectId: objectId, attribute: attribute };
-        container.getRegistration().then(reg => {
-            reg.active.postMessage(message)
-        });
+        var controller = container.controller;
+        if (controller != null) {
+            controller.postMessage(message);
+        }
     })
     return await promise;
 }
@@ -55,9 +56,10 @@ export async function getProxyAsyncAttributeAsProxy(container, id, objectId, att
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "GetProxyAsyncAttributeAsProxy", id: id, objectId: objectId, attribute: attribute };
-        container.getRegistration().then(reg => {
-            reg.active.postMessage(message)
-        });
+        var controller = container.controller;
+        if (controller != null) {
+            controller.postMessage(message);
+        }
     })
     return await promise;
 }
@@ -66,9 +68,10 @@ export async function getProxyAttribute(container, id, objectId, attribute) {
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "GetProxyAttribute", id: id, objectId: objectId, attribute: attribute };
-        container.getRegistration().then(reg =>
-            reg.active.postMessage(message)
-        );
+        var controller = container.controller;
+        if (controller != null) {
+            controller.postMessage(message);
+        }
     })
     return await promise;
 }
@@ -77,9 +80,10 @@ export async function callProxyMethodAsProxy(container, id, objectId, method, ar
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "CallProxyMethodAsProxy", id: id, objectId: objectId, method: method, args: args };
-        container.getRegistration().then(reg =>
-            reg.active.postMessage(message)
-        );
+        var controller = container.controller;
+        if (controller != null) {
+            controller.postMessage(message);
+        }
     })
     return await promise;
 }
@@ -88,9 +92,10 @@ export async function callProxyAsyncMethodAsProxy(container, id, objectId, metho
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "CallProxyAsyncMethodAsProxy", id: id, objectId: objectId, method: method, args: args };
-        container.getRegistration().then(reg =>
-            reg.active.postMessage(message)
-        );
+        var controller = container.controller;
+        if (controller != null) {
+            controller.postMessage(message);
+        }
     })
     return await promise;
 }
@@ -99,16 +104,18 @@ export async function callProxyMethod(container, id, objectId, method, args = []
     var promise = new Promise((resolve, _) => {
         resolvers[id] = resolve;
         var message = { type: "CallProxyMethod", id: id, objectId: objectId, method: method, args: args };
-        container.getRegistration().then(reg =>
-            reg.active.postMessage(message)
-        );
+        var controller = container.controller;
+        if (controller != null) {
+            controller.postMessage(message);
+        }
     })
     return await promise;
 }
 
-export async function resolveRespondWith(container, id, args) {
-    var message = { type: "CallResolveRespondWith", id: id, args: args };
-    container.getRegistration().then(reg =>
-        reg.active.postMessage(message)
-    );
+export async function resolveProxy(container, id, args) {
+    var message = { type: "CallResolve", id: id, args: args };
+    var controller = container.controller;
+    if (controller != null) {
+        controller.postMessage(message);
+    }
 }

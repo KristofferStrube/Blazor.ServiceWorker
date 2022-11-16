@@ -39,7 +39,7 @@ public class ServiceWorkerContainer : BaseJSWrapper
         await ScriptManager.AddScriptAsync(id, jSRuntime, this, script);
         IJSObjectReference helper = await helperTask.Value;
         await helper.InvokeVoidAsync("registerMessageListener", JSReference);
-        IJSObjectReference jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("register", $"{scriptBootstrapperURL}?id={id}&root={rootPath}", new RegistrationOptions() { Type = WorkerType.Module });
+        IJSObjectReference jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("register", $"{scriptBootstrapperURL}?id={id}&root={rootPath}", new RegistrationOptions() { Type = WorkerType.Classic, UpdateViaCache = ServiceWorkerUpdateViaCache.Imports });
         return new ServiceWorkerRegistration(jSRuntime, jSInstance);
     }
 

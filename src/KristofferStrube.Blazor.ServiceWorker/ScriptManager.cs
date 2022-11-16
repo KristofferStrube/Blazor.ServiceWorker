@@ -16,22 +16,24 @@ public static class ScriptManager
     [JSInvokable]
     public static async Task InvokeOnInstallAsync(string stringId, string eventId)
     {
-        if (Guid.TryParse(stringId, out Guid id) &&
-            scripts.TryGetValue(id, out ExecutionContext? context) &&
-            context.Scope.OnInstall is not null)
+        if (Guid.TryParse(stringId, out Guid id) && scripts.TryGetValue(id, out ExecutionContext? context))
         {
-            await context.Scope.OnInstall.Invoke();
+            if (context.Scope.OnInstall is not null)
+            {
+                await context.Scope.OnInstall.Invoke();
+            }
         }
     }
 
     [JSInvokable]
     public static async Task InvokeOnActivateAsync(string stringId, string eventId)
     {
-        if (Guid.TryParse(stringId, out Guid id) &&
-            scripts.TryGetValue(id, out ExecutionContext? context) &&
-            context.Scope.OnActivate is not null)
+        if (Guid.TryParse(stringId, out Guid id) && scripts.TryGetValue(id, out ExecutionContext? context))
         {
-            await context.Scope.OnActivate.Invoke();
+            if (context.Scope.OnActivate is not null)
+            {
+                await context.Scope.OnActivate.Invoke();
+            }
         }
     }
 

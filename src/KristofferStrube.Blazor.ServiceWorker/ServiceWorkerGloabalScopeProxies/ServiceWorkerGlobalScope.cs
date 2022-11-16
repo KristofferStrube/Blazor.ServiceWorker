@@ -18,20 +18,27 @@ public class ServiceWorkerGlobalScope : BaseJSServiceWorkerGlobalScopeProxy
 
     public Func<PushEvent, Task>? OnPush { get; set; }
 
+    public async Task<Clients> GetClientsAsync()
+    {
+        return await this.MemoizedTask(async () =>
+    {
+        Guid objectId = await GetProxyAttributeAsProxy("clients");
+        return new Clients(jSRuntime, objectId, container);
+    });
+    }
+
     public async Task<CacheStorage> GetCachesAsync()
     {
         return await this.MemoizedTask(async () =>
     {
-        IJSObjectReference helper = await helperTask.Value;
-        Guid objectId = await helper.GetProxyAttributeAsProxy(container, Id, "caches");
+        Guid objectId = await GetProxyAttributeAsProxy("caches");
         return new CacheStorage(jSRuntime, objectId, container);
     });
     }
 
     public async Task<Response> FetchAsync(RequestInfo input, RequestInit? init = null)
     {
-        IJSObjectReference helper = await helperTask.Value;
-        Guid objectId = await helper.CallProxyAsyncMethodAsProxy(container, Id, "fetch", new object[] { (string)input, init });
+        Guid objectId = await CallProxyAsyncMethodAsProxy("fetch", new object[] { (string)input, init });
         return new Response(jSRuntime, objectId, container);
     }
 }
