@@ -1,0 +1,1 @@
+importScripts("_content/KristofferStrube.Blazor.ServiceWorker/KristofferStrube.Blazor.ServiceWorker.Script.js")
