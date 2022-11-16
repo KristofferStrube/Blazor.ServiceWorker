@@ -27,6 +27,11 @@ public class ServiceWorkerGlobalScope : BaseJSServiceWorkerGlobalScopeProxy
     });
     }
 
+    public async Task SkipWaitingAsync()
+    {
+        await CallProxyAsyncMethodAsNullableProxy("skipWaiting");
+    }
+
     public async Task<CacheStorage> GetCachesAsync()
     {
         return await this.MemoizedTask(async () =>
