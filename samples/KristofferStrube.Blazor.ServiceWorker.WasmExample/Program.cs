@@ -36,8 +36,6 @@ var registration = await serviceWorker.RegisterAsync("./service-worker.js", root
     scope.OnActivate = async () =>
     {
         logger.WriteLine("We activated!");
-        var clients = await scope.GetClientsAsync();
-        await clients.ClaimAsync();
     };
     scope.OnFetch = async (fetchEvent) =>
     {
