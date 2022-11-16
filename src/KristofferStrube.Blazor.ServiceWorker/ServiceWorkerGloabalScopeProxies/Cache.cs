@@ -13,6 +13,6 @@ public class Cache : BaseJSServiceWorkerGlobalScopeProxy
     {
         await container.StartMessagesAsync();
         IJSObjectReference helper = await helperTask.Value;
-        await helper.CallProxyAsyncMethodAsProxy(container, Id, "add", new string[] { request });
+        await helper.CallProxyAsyncMethodAsNullableProxy(container, Id, "add", new string[] { request });
     }
 }

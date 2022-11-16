@@ -1,5 +1,5 @@
-export function isAttributeNull(object, attribute) {
-    return object[attribute] == null;
+export function isAttributeNullOrUndefined(object, attribute) {
+    return object[attribute] == null || object[attribute] == undefined;
 }
 
 export function getAttribute(object, attribute) {

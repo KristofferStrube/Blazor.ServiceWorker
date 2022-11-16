@@ -14,11 +14,14 @@ public class NavigatorService : INavigatorService
         this.jSRuntime = jSRuntime;
     }
 
-    public async Task<ServiceWorkerContainer> GetServiceWorkerAsync() => await this.MemoizedTask(async () =>
+    public async Task<ServiceWorkerContainer> GetServiceWorkerAsync()
+    {
+        return await this.MemoizedTask(async () =>
     {
         IJSObjectReference helper = await helperTask.Value;
         IJSObjectReference jSNavigator = await helper.InvokeAsync<IJSObjectReference>("getNavigator");
         IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", jSNavigator, "serviceWorker");
         return new ServiceWorkerContainer(jSRuntime, jSInstance);
     });
+    }
 }

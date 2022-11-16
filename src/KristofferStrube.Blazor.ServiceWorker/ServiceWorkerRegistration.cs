@@ -1,7 +1,5 @@
-﻿using KristofferStrube.Blazor.FileAPI;
-using KristofferStrube.Blazor.ServiceWorker.Extensions;
+﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
 using Microsoft.JSInterop;
-using System.IO.Pipelines;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
@@ -22,7 +20,7 @@ public class ServiceWorkerRegistration : BaseJSWrapper, IServiceWorkerRegistrati
     public async Task<IServiceWorker?> GetInstallingAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
-        if (await helper.InvokeAsync<bool>("isAttributeNull", JSReference, "installing"))
+        if (await helper.InvokeAsync<bool>("isAttributeNullOrUndefined", JSReference, "installing"))
         {
             return null;
         }
@@ -34,7 +32,7 @@ public class ServiceWorkerRegistration : BaseJSWrapper, IServiceWorkerRegistrati
     public async Task<IServiceWorker?> GetWaitingAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
-        if (await helper.InvokeAsync<bool>("isAttributeNull", JSReference, "waiting"))
+        if (await helper.InvokeAsync<bool>("isAttributeNullOrUndefined", JSReference, "waiting"))
         {
             return null;
         }
@@ -46,7 +44,7 @@ public class ServiceWorkerRegistration : BaseJSWrapper, IServiceWorkerRegistrati
     public async Task<IServiceWorker?> GetActiveAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
-        if (await helper.InvokeAsync<bool>("isAttributeNull", JSReference, "active"))
+        if (await helper.InvokeAsync<bool>("isAttributeNullOrUndefined", JSReference, "active"))
         {
             return null;
         }

@@ -74,6 +74,10 @@ self.addEventListener("message", (e) => {
                 message.args[i] = proxyDict[message.args[i]];
             }
         }
+        if (proxyDict[message.objectId] == undefined && resolvers[message.id] == undefined) {
+            resolvePost(message.type, message.id, undefined);
+            return;
+        }
         if (message.type == "CallProxyMethodAsProxy") {
             var obj = proxyDict[message.objectId][message.method].apply(proxyDict[message.objectId], message.args);
             var objectId = generateGUID();
