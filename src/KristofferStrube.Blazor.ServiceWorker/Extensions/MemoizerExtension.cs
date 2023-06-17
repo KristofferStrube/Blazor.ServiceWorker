@@ -3,7 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace KristofferStrube.Blazor.ServiceWorker.Extensions;
 
-/// <remarks>Adopted from <see href="https://stackoverflow.com/a/53299290">this following StackOverflow answer</a>.</remarks>
+/// <remarks>Adopted from <see href="https://stackoverflow.com/a/53299290">this StackOverflow answer</see>.</remarks>
 internal static class MemoizerExtension
 {
     internal static ConditionalWeakTable<object, ConcurrentDictionary<string, object>> _weakCache = new();
