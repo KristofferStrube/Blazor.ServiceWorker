@@ -17,7 +17,7 @@ The sample project can be demoed at https://kristofferstrube.github.io/Blazor.Se
 
 On each page you can find the corresponding code for the example in the top right corner.
 
-On the *API Coverage Status* page you can get an overview over what parts of the API we support currently.
+On the [API Coverage Status](https://kristofferstrube.github.io/Blazor.ServiceWorker/Status) page you can get an overview over what parts of the API we support currently.
 
 # Getting Started
 A limitation of statically served Service Workers is that they only have access to the scope that the actual file belong in.
