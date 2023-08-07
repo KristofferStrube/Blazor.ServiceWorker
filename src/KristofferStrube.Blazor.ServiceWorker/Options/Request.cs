@@ -4,7 +4,7 @@ namespace KristofferStrube.Blazor.ServiceWorker;
 
 public class Request : BaseJSServiceWorkerGlobalScopeProxy
 {
-    internal Request(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
+    public Request(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
     {
     }
 

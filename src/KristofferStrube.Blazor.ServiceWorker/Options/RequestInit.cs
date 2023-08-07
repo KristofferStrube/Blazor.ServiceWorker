@@ -1,4 +1,4 @@
-﻿namespace KristofferStrube.Blazor.ServiceWorker.Options;
+﻿namespace KristofferStrube.Blazor.ServiceWorker;
 
 public class RequestInit
 {

@@ -2,9 +2,9 @@
 
 public class RequestInfo
 {
-    internal readonly object request;
+    public readonly object request;
 
-    internal RequestInfo(object request)
+    public RequestInfo(object request)
     {
         this.request = request;
     }

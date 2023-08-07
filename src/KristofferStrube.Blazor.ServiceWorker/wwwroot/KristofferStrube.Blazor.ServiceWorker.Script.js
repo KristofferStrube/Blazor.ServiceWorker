@@ -4,6 +4,12 @@ const params = new Proxy(new URLSearchParams(self.location.search), {
 let id = params.id;
 let root = self.location.origin + params.root + "/";
 
+const proxyHandler = {
+    construct(target, args) {
+        return new target(...args);
+    },
+};
+
 let proxyDict = {};
 proxyDict[id] = self;
 
@@ -99,6 +105,13 @@ self.addEventListener("message", (e) => {
         else if (message.type == "CallProxyMethod") {
             var obj = proxyDict[message.objectId][message.method].apply(proxyDict[message.objectId], message.args);
             resolvePost(message.type, message.id, obj);
+        }
+        else if (message.type == "CallProxyConstructorAsProxy") {
+            var newProxy = new Proxy(proxyDict[message.objectId][message.name], proxyHandler);
+            var obj = new newProxy(...message.args)
+            var objectId = generateGUID();
+            proxyDict[objectId] = obj;
+            resolvePost(message.type, message.id, objectId);
         }
         else if (message.type == "CallResolve") {
             resolvers[message.id].apply(this, message.args);

@@ -112,6 +112,18 @@ export async function callProxyMethod(container, id, objectId, method, args = []
     return await promise;
 }
 
+export async function callProxyConstructorAsProxy(container, id, objectId, name, args = []) {
+    var promise = new Promise((resolve, _) => {
+        resolvers[id] = resolve;
+        var message = { type: "CallProxyConstructorAsProxy", id: id, objectId: objectId, name: name, args: args };
+        var controller = container.controller;
+        if (controller != null) {
+            controller.postMessage(message);
+        }
+    })
+    return await promise;
+}
+
 export async function resolveProxy(container, id, args) {
     var message = { type: "CallResolve", id: id, args: args };
     var controller = container.controller;

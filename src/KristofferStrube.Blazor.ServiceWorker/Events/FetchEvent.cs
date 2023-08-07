@@ -4,7 +4,7 @@ namespace KristofferStrube.Blazor.ServiceWorker;
 
 public class FetchEvent : BaseJSServiceWorkerGlobalScopeProxy
 {
-    internal FetchEvent(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
+    public FetchEvent(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
     {
     }
 
@@ -15,9 +15,9 @@ public class FetchEvent : BaseJSServiceWorkerGlobalScopeProxy
         return new Request(jSRuntime, objectId, container);
     }
 
-    public async Task RespondWithAsync(Func<Task<Response>> r)
+    public async Task RespondWithAsync(Func<Task<ResponseProxy>> r)
     {
-        Response response = await r();
+        ResponseProxy response = await r();
         await ResolveProxy(Id, response.Id.ToString());
     }
 }

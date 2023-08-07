@@ -4,7 +4,7 @@ namespace KristofferStrube.Blazor.ServiceWorker;
 
 public class ServiceWorkerContainer : BaseJSWrapper
 {
-    internal ServiceWorkerContainer(IJSRuntime jSRuntime, IJSObjectReference jSReference) : base(jSRuntime, jSReference)
+    public ServiceWorkerContainer(IJSRuntime jSRuntime, IJSObjectReference jSReference) : base(jSRuntime, jSReference)
     {
     }
 
@@ -33,7 +33,7 @@ public class ServiceWorkerContainer : BaseJSWrapper
         return new ServiceWorkerRegistration(jSRuntime, jSInstance);
     }
 
-    public async Task<IServiceWorkerRegistration> RegisterAsync(string scriptBootstrapperURL, string rootPath, Func<ServiceWorkerGlobalScope, Task> script)
+    public async Task<IServiceWorkerRegistration> RegisterAsync(string scriptBootstrapperURL, string rootPath, Func<ServiceWorkerGlobalScopeProxy, Task> script)
     {
         Guid id = Guid.Empty;
         await ScriptManager.AddScriptAsync(id, jSRuntime, this, script);

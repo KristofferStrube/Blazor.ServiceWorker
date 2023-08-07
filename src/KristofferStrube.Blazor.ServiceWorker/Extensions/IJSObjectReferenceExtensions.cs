@@ -1,5 +1,5 @@
 ﻿namespace KristofferStrube.Blazor.ServiceWorker.Extensions;
 
-internal static class IJSObjectReferenceExtensions
+public static class IJSObjectReferenceExtensions
 {
 }

@@ -6,9 +6,9 @@ public static class ScriptManager
 {
     private static readonly Dictionary<Guid, ExecutionContext> scripts = new();
 
-    public static async Task AddScriptAsync(Guid id, IJSRuntime jSRuntime, ServiceWorkerContainer container, Func<ServiceWorkerGlobalScope, Task> script)
+    public static async Task AddScriptAsync(Guid id, IJSRuntime jSRuntime, ServiceWorkerContainer container, Func<ServiceWorkerGlobalScopeProxy, Task> script)
     {
-        ServiceWorkerGlobalScope scope = new ServiceWorkerGlobalScope(jSRuntime, id, container);
+        ServiceWorkerGlobalScopeProxy scope = new ServiceWorkerGlobalScopeProxy(jSRuntime, id, container);
         await script(scope);
         scripts.Add(id, new(jSRuntime, container, scope, script));
     }
@@ -60,14 +60,14 @@ public static class ScriptManager
     }
 }
 
-internal class ExecutionContext
+public class ExecutionContext
 {
     public IJSRuntime JSRuntime;
     public ServiceWorkerContainer Container;
-    public ServiceWorkerGlobalScope Scope;
-    public Func<ServiceWorkerGlobalScope, Task> Script;
+    public ServiceWorkerGlobalScopeProxy Scope;
+    public Func<ServiceWorkerGlobalScopeProxy, Task> Script;
 
-    internal ExecutionContext(IJSRuntime jSRuntime, ServiceWorkerContainer container, ServiceWorkerGlobalScope scope, Func<ServiceWorkerGlobalScope, Task> script)
+    public ExecutionContext(IJSRuntime jSRuntime, ServiceWorkerContainer container, ServiceWorkerGlobalScopeProxy scope, Func<ServiceWorkerGlobalScopeProxy, Task> script)
     {
         JSRuntime = jSRuntime;
         Container = container;

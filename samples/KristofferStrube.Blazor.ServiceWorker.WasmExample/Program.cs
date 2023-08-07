@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using KristofferStrube.Blazor.ServiceWorker;
 using KristofferStrube.Blazor.ServiceWorker.WasmExample;
 using Microsoft.JSInterop;
+using KristofferStrube.Blazor.Streams;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -53,11 +54,27 @@ var registration = await serviceWorker.RegisterAsync("./service-worker.js", root
                 return response;
             }
 
+            if (url.Contains("download/"))
+            {
+                var downloadResponse = await scope.FetchAsync(url);
+                var body = await downloadResponse.GetBodyAsync();
+                var responseInit = new ResponseInit() {
+                    Headers = new()
+                    {
+                        { "Content-Disposition", $"attachment; filename=\"image_{Random.Shared.Next(9999):D4}.jpg\"" },
+                        { "Content-Type", "image/png" }
+                    }
+                };
+                var streamResponse = await scope.ConstructResponse(body, responseInit);
+                return streamResponse;
+            }
+
             if (url.Contains("mountain.jpg"))
             {
                 var replacement = Random.Shared.Next(2) is 1 ? "snow" : "lighthouse";
                 return await scope.FetchAsync(url.Replace("mountain", replacement));
             }
+
             return await scope.FetchAsync(request);
         });
     };

@@ -9,7 +9,7 @@ public class BaseJSServiceWorkerGlobalScopeProxy
     protected readonly Lazy<Task<IJSObjectReference>> helperTask;
     protected readonly ServiceWorkerContainer container;
 
-    internal BaseJSServiceWorkerGlobalScopeProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container)
+    public BaseJSServiceWorkerGlobalScopeProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container)
     {
         this.jSRuntime = jSRuntime;
         helperTask = new(jSRuntime.GetHelperAsync);
@@ -19,39 +19,39 @@ public class BaseJSServiceWorkerGlobalScopeProxy
 
     public Guid Id { get; set; }
 
-    internal async Task<Guid> GetProxyAttributeAsProxy(string attribute)
+    public async Task<Guid> GetProxyAttributeAsProxy(string attribute)
     {
         IJSObjectReference helper = await helperTask.Value;
         return Guid.Parse(await helper.InvokeAsync<string>("getProxyAttributeAsProxy", container.JSReference, Guid.NewGuid(), Id, attribute));
     }
 
-    internal async Task<Guid> GetProxyAsyncAttributeAsProxy(string attribute)
+    public async Task<Guid> GetProxyAsyncAttributeAsProxy(string attribute)
     {
         IJSObjectReference helper = await helperTask.Value;
         return Guid.Parse(await helper.InvokeAsync<string>("getProxyAsyncAttributeAsProxy", container.JSReference, Guid.NewGuid(), Id, attribute));
     }
 
-    internal async Task<T> GetProxyAttribute<T>(string attribute)
+    public async Task<T> GetProxyAttribute<T>(string attribute)
     {
         IJSObjectReference helper = await helperTask.Value;
         return await helper.InvokeAsync<T>("getProxyAttribute", container.JSReference, Guid.NewGuid(), Id, attribute);
     }
 
-    internal async Task<Guid> CallProxyMethodAsProxy(string method, params object[]? args)
+    public async Task<Guid> CallProxyMethodAsProxy(string method, params object[]? args)
     {
         args ??= Array.Empty<object>();
         IJSObjectReference helper = await helperTask.Value;
         return Guid.Parse(await helper.InvokeAsync<string>("callProxyMethodAsProxy", container.JSReference, Guid.NewGuid(), Id, method, args));
     }
 
-    internal async Task<Guid> CallProxyAsyncMethodAsProxy(string method, params object[]? args)
+    public async Task<Guid> CallProxyAsyncMethodAsProxy(string method, params object[]? args)
     {
         args ??= Array.Empty<object>();
         IJSObjectReference helper = await helperTask.Value;
         return Guid.Parse(await helper.InvokeAsync<string>("callProxyAsyncMethodAsProxy", container.JSReference, Guid.NewGuid(), Id, method, args));
     }
 
-    internal async Task<Guid?> CallProxyAsyncMethodAsNullableProxy(string method, params object[]? args)
+    public async Task<Guid?> CallProxyAsyncMethodAsNullableProxy(string method, params object[]? args)
     {
         args ??= Array.Empty<object>();
         IJSObjectReference helper = await helperTask.Value;
@@ -64,14 +64,21 @@ public class BaseJSServiceWorkerGlobalScopeProxy
         return Guid.Parse(proxyObjectId);
     }
 
-    internal async Task<T> CallProxyMethod<T>(string method, params object[]? args)
+    public async Task<T> CallProxyMethod<T>(string method, params object[]? args)
     {
         args ??= Array.Empty<object>();
         IJSObjectReference helper = await helperTask.Value;
         return await helper.InvokeAsync<T>("callProxyMethod", container.JSReference, Guid.NewGuid(), Id, method, args);
     }
 
-    internal async Task ResolveProxy(Guid objectId, params object[]? args)
+    public async Task<Guid> CallProxyConstructorAsProxy(string name, params object[]? args)
+    {
+        args ??= Array.Empty<object>();
+        IJSObjectReference helper = await helperTask.Value;
+        return Guid.Parse(await helper.InvokeAsync<string>("callProxyConstructorAsProxy", container.JSReference, Guid.NewGuid(), Id, name, args));
+    }
+
+    public async Task ResolveProxy(Guid objectId, params object[]? args)
     {
         IJSObjectReference helper = await helperTask.Value;
         await helper.InvokeVoidAsync("resolveProxy", container.JSReference, objectId, args);

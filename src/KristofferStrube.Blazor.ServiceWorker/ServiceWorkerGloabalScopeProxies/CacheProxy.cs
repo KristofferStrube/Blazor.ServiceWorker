@@ -2,9 +2,9 @@
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class Cache : BaseJSServiceWorkerGlobalScopeProxy
+public class CacheProxy : BaseJSServiceWorkerGlobalScopeProxy
 {
-    internal Cache(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
+    public CacheProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
     {
     }
 

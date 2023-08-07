@@ -4,7 +4,7 @@ namespace KristofferStrube.Blazor.ServiceWorker;
 
 public class JsonProxy : BaseJSServiceWorkerGlobalScopeProxy
 {
-    internal JsonProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
+    public JsonProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
     {
     }
 

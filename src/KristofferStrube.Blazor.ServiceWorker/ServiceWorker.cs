@@ -5,7 +5,7 @@ namespace KristofferStrube.Blazor.ServiceWorker;
 
 public class ServiceWorker : BaseJSWrapper, IServiceWorker
 {
-    internal static async Task<ServiceWorker> CreateAsync(IJSRuntime jSRuntime, IJSObjectReference jSReference)
+    public static async Task<ServiceWorker> CreateAsync(IJSRuntime jSRuntime, IJSObjectReference jSReference)
     {
         IJSObjectReference helper = await jSRuntime.GetHelperAsync();
         ServiceWorker serviceWorker = new(jSRuntime, jSReference);
@@ -13,7 +13,7 @@ public class ServiceWorker : BaseJSWrapper, IServiceWorker
         return serviceWorker;
     }
 
-    internal ServiceWorker(IJSRuntime jSRuntime, IJSObjectReference jSReference) : base(jSRuntime, jSReference)
+    public ServiceWorker(IJSRuntime jSRuntime, IJSObjectReference jSReference) : base(jSRuntime, jSReference)
     {
     }
 
