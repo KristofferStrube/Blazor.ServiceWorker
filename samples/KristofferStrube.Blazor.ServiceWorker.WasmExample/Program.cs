@@ -70,7 +70,7 @@ var registration = await serviceWorker.RegisterAsync("./service-worker.js", root
 
             if (url.Contains("mountain.jpg"))
             {
-                var replacement = Random.Shared.Next(2) is 1 ? "snow" : "lighthouse";
+                string replacement = Random.Shared.Next(2) is 1 ? "snow" : "lighthouse";
                 return await scope.FetchAsync(url.Replace("mountain", replacement));
             }
 

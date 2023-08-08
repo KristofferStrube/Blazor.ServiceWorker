@@ -1,5 +1,6 @@
 ﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
 using Microsoft.JSInterop;
+using System;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
@@ -82,5 +83,11 @@ public class BaseJSServiceWorkerGlobalScopeProxy
     {
         IJSObjectReference helper = await helperTask.Value;
         await helper.InvokeVoidAsync("resolveProxy", container.JSReference, objectId, args);
+    }
+
+    internal async Task InitialBlazorHandshake()
+    {
+        IJSObjectReference helper = await helperTask.Value;
+        await helper.InvokeVoidAsync("initialBlazorHandshake", container.JSReference);
     }
 }

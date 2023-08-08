@@ -1,4 +1,5 @@
 ﻿using Microsoft.JSInterop;
+using Microsoft.JSInterop.Infrastructure;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
@@ -36,11 +37,16 @@ public class ServiceWorkerContainer : BaseJSWrapper
     public async Task<IServiceWorkerRegistration> RegisterAsync(string scriptBootstrapperURL, string rootPath, Func<ServiceWorkerGlobalScopeProxy, Task> script)
     {
         Guid id = Guid.Empty;
-        await ScriptManager.AddScriptAsync(id, jSRuntime, this, script);
+        await ScriptManager.AddScriptAsync(id, jSRuntime, this, async (scope) =>
+        {
+            await script(scope);
+            await scope.InitialBlazorHandshake();
+        });
         IJSObjectReference helper = await helperTask.Value;
         await helper.InvokeVoidAsync("registerMessageListener", JSReference);
         IJSObjectReference jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("register", $"{scriptBootstrapperURL}?id={id}&root={rootPath}", new RegistrationOptions() { Type = WorkerType.Classic, UpdateViaCache = ServiceWorkerUpdateViaCache.Imports });
-        return new ServiceWorkerRegistration(jSRuntime, jSInstance);
+        var registration = new ServiceWorkerRegistration(jSRuntime, jSInstance);
+        return registration;
     }
 
     public async Task<IServiceWorkerRegistration> GetRegistrationAsync(string clientURL = "")

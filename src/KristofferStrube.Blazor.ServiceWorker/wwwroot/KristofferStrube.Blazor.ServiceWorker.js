@@ -131,3 +131,11 @@ export async function resolveProxy(container, id, args) {
         controller.postMessage(message);
     }
 }
+
+export async function initialBlazorHandshake(container) {
+    var message = { type: "InitialBlazorHandshake" };
+    var controller = container.controller;
+    if (controller != null) {
+        controller.postMessage(message);
+    }
+}

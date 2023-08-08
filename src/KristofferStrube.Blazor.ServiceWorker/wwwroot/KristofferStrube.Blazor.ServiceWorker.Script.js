@@ -3,6 +3,7 @@ const params = new Proxy(new URLSearchParams(self.location.search), {
 });
 let id = params.id;
 let root = self.location.origin + params.root + "/";
+let receivedInitialBlazorHandshakes = [];
 
 const proxyHandler = {
     construct(target, args) {
@@ -22,22 +23,7 @@ self.onactivate = (event) => {
     invokePost("Activate", generateGUID(), event);
 }
 self.onfetch = (event) => {
-    var skippedURLs = [
-        root,
-        root + "_vs/browserLink",
-        root + "css/bootstrap/bootstrap.min.css",
-        root + "css/app.css",
-        root + "KristofferStrube.Blazor.ServiceWorker.WasmExample.styles.css",
-        root + "css/open-iconic/font/css/open-iconic-bootstrap.min.css",
-        root + "favicon.png",
-        root + "_content/KristofferStrube.Blazor.ServiceWorker/KristofferStrube.Blazor.ServiceWorker.js",
-    ]
-    if (!(skippedURLs.includes(event.request.url) ||
-        event.request.url.startsWith("http://") ||
-        event.request.url.startsWith("wss://") ||
-        event.request.url.startsWith("ws://") ||
-        event.request.url.startsWith(root + "?") ||
-        event.request.url.includes("/_framework/"))) {
+    if (receivedInitialBlazorHandshakes.includes(event.clientId) || event.request.url.endsWith("#outgoing")) {
         event.respondWith(handleFetch(event));
     }
 }
@@ -57,7 +43,10 @@ self.onpush = (event) => {
 
 self.addEventListener("message", (e) => {
     var message = e.data;
-    if (message.type == "GetProxyAttributeAsProxy") {
+    if (message.type == "InitialBlazorHandshake") {
+        receivedInitialBlazorHandshakes.push(e.source.id);
+    }
+    else if (message.type == "GetProxyAttributeAsProxy") {
         var obj = proxyDict[message.objectId][message.attribute];
         var objectId = generateGUID();
         proxyDict[objectId] = obj;

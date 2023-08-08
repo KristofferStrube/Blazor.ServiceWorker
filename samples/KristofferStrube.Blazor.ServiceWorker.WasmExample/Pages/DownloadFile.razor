@@ -4,10 +4,14 @@
 <PageTitle>ServiceWorker - Download File as stream</PageTitle>
 
 <h2>Download File as stream</h2>
-<p>On this page we use that we have setup configuration in <code>Program.cs</code> to intercept any URLs that contains <code>"download/"</code> and intead return the file referenced as a <code>ReadableStream</code> and with a new name.</p>
+<p>
+    On this page we use that we have setup configuration in <code>Program.cs</code> to intercept any URLs that contains <code>"download/"</code> and intead return the file referenced as a <code>ReadableStream</code> and with a new name.
+    <br />
+    We can't intercept outgoing links with the wrapper normally, but if we append the url with <code>#outgoing</code> we can specifically state that it should do it anyway.
+</p>
 
-<a href="download/lighthouse.jpg" target="_blank">download/lighthouse.jpg</a>
+<a href="download/lighthouse.jpg#outgoing" target="_blank">download/lighthouse.jpg#outgoing</a>
 <br />
-<a href="download/mountain.jpg" target="_blank">download/mountain.jpg</a>
+<a href="download/mountain.jpg#outgoing" target="_blank">download/mountain.jpg#outgoing</a>
 <br />
-<a href="download/snow.jpg" target="_blank">download/snow.jpg</a>
+<a href="download/snow.jpg#outgoing" target="_blank">download/snow.jpg#outgoing</a>

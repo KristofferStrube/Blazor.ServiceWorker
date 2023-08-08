@@ -46,7 +46,7 @@ public class ServiceWorkerGlobalScopeProxy : BaseJSServiceWorkerGlobalScopeProxy
         return new ResponseProxy(jSRuntime, objectId, container);
     }
 
-    public async Task <ResponseProxy> ConstructResponse(string body, ResponseInit? init = null)
+    public async Task<ResponseProxy> ConstructResponse(string body, ResponseInit? init = null)
     {
         Guid objectId = await CallProxyConstructorAsProxy("Response", body, init);
         return new ResponseProxy(jSRuntime, objectId, container);
