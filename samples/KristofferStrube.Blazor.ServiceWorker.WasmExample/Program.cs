@@ -42,13 +42,13 @@ var registration = await serviceWorker.RegisterAsync("./service-worker.js", root
     };
     scope.OnFetch = async (fetchEvent) =>
     {
-        var caches = await scope.GetCachesAsync();
-        var request = await fetchEvent.GetRequestAsync();
-        var url = await request.GetURLAsync();
+        CacheStorageProxy caches = await scope.GetCachesAsync();
+        Request request = await fetchEvent.GetRequestAsync();
+        string url = await request.GetURLAsync();
         logger.WriteLine($"We fetched: {url}");
         await fetchEvent.RespondWithAsync(async () =>
         {
-            var response = await caches.MatchAsync(request);
+            ResponseProxy? response = await caches.MatchAsync(request);
             if (response is not null)
             {
                 return response;
@@ -56,17 +56,16 @@ var registration = await serviceWorker.RegisterAsync("./service-worker.js", root
 
             if (url.Contains("download/"))
             {
-                var downloadResponse = await scope.FetchAsync(url);
-                var body = await downloadResponse.GetBodyAsync();
-                var responseInit = new ResponseInit() {
+                response = await scope.FetchAsync(request);
+                ReadableStreamProxy body = await response.GetBodyAsync();
+                return await scope.ConstructResponse(body, new ResponseInit()
+                {
                     Headers = new()
                     {
                         { "Content-Disposition", $"attachment; filename=\"image_{Random.Shared.Next(9999):D4}.jpg\"" },
                         { "Content-Type", "image/png" }
                     }
-                };
-                var streamResponse = await scope.ConstructResponse(body, responseInit);
-                return streamResponse;
+                });
             }
 
             if (url.Contains("mountain.jpg"))
