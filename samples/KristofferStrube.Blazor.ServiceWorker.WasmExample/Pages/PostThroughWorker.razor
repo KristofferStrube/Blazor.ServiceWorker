@@ -7,7 +7,7 @@
 <PageTitle>Post Through Worker</PageTitle>
 
 <h2>Post Through Worker</h2>
-<p>On this page we create a ReadableStream from a Stream and the transfer that to the worker thread which then posts it to an API. This makes it so that the expensive work of sending these requests is done in a separate thread.</p>
+<p>On this page we create a ReadableStream from a Stream and then transfer that to the worker thread which then posts it to an API. This makes it so that the expensive work of sending these requests is done in a separate thread.</p>
 <button class="btn btn-success" @onclick=SendReadableStream>Post!</button>
 
 @code {
