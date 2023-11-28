@@ -24,7 +24,7 @@
         if (serviceWorker is null) return;
 
         // Create ReadableStream from a Stream.
-        var data = await HttpClient.GetStreamAsync("images/mountain.jpg");
+        var data = await HttpClient.GetStreamAsync("images/snow.jpg");
         using var streamRef = new DotNetStreamReference(stream: data, leaveOpen: false);
         var jSStreamReference = await JSRuntime.InvokeAsync<IJSInProcessObjectReference>("jSStreamReference", streamRef);
         var readableStream = await ReadableStreamInProcess.CreateAsync(JSRuntime, jSStreamReference);
