@@ -7,7 +7,7 @@
 <PageTitle>Post Through Worker</PageTitle>
 
 <h2>Post Through Worker</h2>
-<p>On this page...</p>
+<p>On this page we create a ReadableStream from a Stream and the transfer that to the worker thread which then posts it to an API. This makes it so that the expensive work of sending these requests is done in a separate thread.</p>
 <button class="btn btn-success" @onclick=SendReadableStream>Post!</button>
 
 @code {
@@ -17,20 +17,24 @@
 
     public async Task SendReadableStream()
     {
+        // Get Service Worker
         container = await NavigatorService.GetServiceWorkerAsync();
         registration = await container.GetReadyAsync();
         serviceWorker = await registration.GetActiveAsync();
         if (serviceWorker is null) return;
 
+        // Create ReadableStream from a Stream.
         var data = await HttpClient.GetStreamAsync("images/mountain.jpg");
         using var streamRef = new DotNetStreamReference(stream: data, leaveOpen: false);
         var jSStreamReference = await JSRuntime.InvokeAsync<IJSInProcessObjectReference>("jSStreamReference", streamRef);
         var readableStream = await ReadableStreamInProcess.CreateAsync(JSRuntime, jSStreamReference);
 
+        // Create a JSON object with a type and payload
         var json = await Json.CreateAsync(JSRuntime);
         await json.SetAttributeAsync("type", "test");
         await json.SetAttributeAsync("payload", readableStream.JSReference);
 
-        await serviceWorker.PostMessageAsync(json, new IJSObjectReference[] { readableStream.JSReference });
+        // Post the JSON object to the service worker and transfer ownership of the ReadableStream as well.
+        await serviceWorker.PostMessageAsync(json, transfer: new IJSObjectReference[] { readableStream.JSReference });
     }
 }
