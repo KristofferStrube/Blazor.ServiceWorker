@@ -31,7 +31,6 @@ var resolvers = {}
 
 export function registerMessageListener(container) {
     container.addEventListener("message", async (e) => {
-        console.log(e);
         var message = e.data
         if (message.type.startsWith("Resolve")) {
             resolvers[message.id].call(this, message.object);
@@ -50,7 +49,6 @@ export async function getProxyAttributeAsProxy(container, id, objectId, attribut
         var serviceWorker = (await container.ready).active;
         if (serviceWorker != null) {
             serviceWorker.postMessage(message);
-            console.log(message);
         }
     })
     return await promise;
@@ -63,7 +61,6 @@ export async function getProxyAsyncAttributeAsProxy(container, id, objectId, att
         var serviceWorker = (await container.ready).active;
         if (serviceWorker != null) {
             serviceWorker.postMessage(message);
-            console.log(message);
         }
     })
     return await promise;
@@ -76,7 +73,6 @@ export async function getProxyAttribute(container, id, objectId, attribute) {
         var serviceWorker = (await container.ready).active;
         if (serviceWorker != null) {
             serviceWorker.postMessage(message);
-            console.log(message);
         }
     })
     return await promise;
@@ -89,7 +85,6 @@ export async function callProxyMethodAsProxy(container, id, objectId, method, ar
         var serviceWorker = (await container.ready).active;
         if (serviceWorker != null) {
             serviceWorker.postMessage(message);
-            console.log(message);
         }
     })
     return await promise;
@@ -102,7 +97,6 @@ export async function callProxyAsyncMethodAsProxy(container, id, objectId, metho
         var serviceWorker = (await container.ready).active;
         if (serviceWorker != null) {
             serviceWorker.postMessage(message);
-            console.log(message);
         }
     })
     return await promise;
@@ -115,7 +109,6 @@ export async function callProxyMethod(container, id, objectId, method, args = []
         var serviceWorker = (await container.ready).active;
         if (serviceWorker != null) {
             serviceWorker.postMessage(message);
-            console.log(message);
         }
     })
     return await promise;
@@ -128,7 +121,6 @@ export async function callProxyConstructorAsProxy(container, id, objectId, name,
         var serviceWorker = (await container.ready).active;
         if (serviceWorker != null) {
             serviceWorker.postMessage(message);
-            console.log(message);
         }
     })
     return await promise;
@@ -139,7 +131,6 @@ export async function resolveProxy(container, id, args) {
     var controller = container.controller;
     if (controller != null) {
         controller.postMessage(message);
-        console.log(message);
     }
 }
 
@@ -148,6 +139,5 @@ export async function initialBlazorHandshake(container) {
     var controller = container.controller;
     if (controller != null) {
         controller.postMessage(message);
-        console.log(message);
     }
 }
