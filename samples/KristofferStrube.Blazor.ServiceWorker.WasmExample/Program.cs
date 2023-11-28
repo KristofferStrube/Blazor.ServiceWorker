@@ -97,7 +97,7 @@ var registration = await serviceWorker.RegisterAsync("./service-worker.js", root
         logger.WriteLine($"The message had type '{type}'!");
         ReadableStreamProxy payload = await json.GetAttributeProxyAsync<ReadableStreamProxy>("payload");
         await scope.FetchAsync("https://kristoffer-strube.dk/API/receive", new RequestInit { Method = "POST", Body = payload, Credentials = "omit", Duplex = "half" });
-        logger.WriteLine($"We send a fetch from a ReadableStream on the Worker Thread!");
+        logger.WriteLine($"The message payload was send to an API on the Worker Thread using fetch!");
     };
     logger.WriteLine("We Initialized!");
     await Task.CompletedTask;
