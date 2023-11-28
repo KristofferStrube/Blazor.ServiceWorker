@@ -1,8 +1,9 @@
-﻿using Microsoft.JSInterop;
+﻿using KristofferStrube.Blazor.ServiceWorker.ServiceWorkerGloabalScopeProxies;
+using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class JsonProxy : BaseJSServiceWorkerGlobalScopeProxy
+public class JsonProxy : BaseJSProxy
 {
     public JsonProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
     {
@@ -17,6 +18,12 @@ public class JsonProxy : BaseJSServiceWorkerGlobalScopeProxy
     {
         Guid objectId = await GetProxyAttributeAsProxy(attribute);
         return new JsonProxy(jSRuntime, objectId, container);
+    }
+
+    public async Task<T> GetAttributeProxyAsync<T>(string attribute) where T : IProxyCreatable<T>
+    {
+        Guid objectId = await GetProxyAttributeAsProxy(attribute);
+        return T.Create(jSRuntime, objectId, container);
     }
 
     public async Task<string> GetAttributeAsStringAsync(string attribute)

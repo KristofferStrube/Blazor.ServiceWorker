@@ -1,0 +1,36 @@
+﻿@page "/PostThroughWorker"
+@using KristofferStrube.Blazor.Streams
+@inject INavigatorService NavigatorService
+@inject IJSRuntime JSRuntime
+@inject HttpClient HttpClient
+
+<PageTitle>Post Through Worker</PageTitle>
+
+<h2>Post Through Worker</h2>
+<p>On this page...</p>
+<button class="btn btn-success" @onclick=SendReadableStream>Post!</button>
+
+@code {
+    ServiceWorkerContainer container = default!;
+    ServiceWorkerRegistration registration = default!;
+    ServiceWorker? serviceWorker;
+
+    public async Task SendReadableStream()
+    {
+        container = await NavigatorService.GetServiceWorkerAsync();
+        registration = await container.GetReadyAsync();
+        serviceWorker = await registration.GetActiveAsync();
+        if (serviceWorker is null) return;
+
+        var data = await HttpClient.GetStreamAsync("images/mountain.jpg");
+        using var streamRef = new DotNetStreamReference(stream: data, leaveOpen: false);
+        var jSStreamReference = await JSRuntime.InvokeAsync<IJSInProcessObjectReference>("jSStreamReference", streamRef);
+        var readableStream = await ReadableStreamInProcess.CreateAsync(JSRuntime, jSStreamReference);
+
+        var json = await Json.CreateAsync(JSRuntime);
+        await json.SetAttributeAsync("type", "test");
+        await json.SetAttributeAsync("payload", readableStream.JSReference);
+
+        await serviceWorker.PostMessageAsync(json, new IJSObjectReference[] { readableStream.JSReference });
+    }
+}

@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class PushMessageDataProxy : BaseJSServiceWorkerGlobalScopeProxy
+public class PushMessageDataProxy : BaseJSProxy
 {
     public PushMessageDataProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
     {

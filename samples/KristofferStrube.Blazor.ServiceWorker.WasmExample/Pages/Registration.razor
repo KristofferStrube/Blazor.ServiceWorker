@@ -6,25 +6,30 @@
 
 <h2>Registration</h2>
 
-<button class="btn btn-success" @onclick="UnregisterAsync">Unregister</button>
-@if (updateAvailable) {
-    <button class="btn btn-success" @onclick="UpdateAsync">Update</button>
+<button class="btn btn-success" @onclick="Unregister">Unregister</button>
+@if (updateAvailable)
+{
+    <button class="btn btn-success" @onclick="Update">Update</button>
 }
-else {
+else
+{
     <button class="btn btn-warning" disabled>Update</button>
 }
 <br />
-Status: @status
+Status: @status<br />
+Scope: @scope
 
 @code {
-    IServiceWorkerRegistration? registration;
+    ServiceWorkerContainer container = default!;
+    ServiceWorkerRegistration? registration;
     bool updateAvailable;
     string status = "";
+    string scope = "";
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-        var container = await NavigatorService.GetServiceWorkerAsync();
+        container = await NavigatorService.GetServiceWorkerAsync();
         registration = await container.GetReadyAsync();
         registration.OnUpdateFound = async () =>
         {
@@ -36,42 +41,45 @@ Status: @status
 
     async Task UpdateStatus()
     {
-        if (registration is null) {
+        if (registration is null)
+        {
             status = "Not registered";
             StateHasChanged();
-            return; 
+            return;
         }
+
+        scope = await registration.GetScopeAsync();
 
         var installing = await registration.GetInstallingAsync();
         var waiting = await registration.GetWaitingAsync();
         var active = await registration.GetActiveAsync();
         if (installing is not null)
         {
-            var statusAction = async (IServiceWorker sw) => status = $"{await sw.GetStateAsync()} and is installing.";
+            var statusAction = async (ServiceWorker sw) => status = $"{await sw.GetStateAsync()} and is installing.";
             await statusAction(installing);
-            installing.OnStateChange = async () => await statusAction(installing);
+            installing.OnStateChange = async () => { await statusAction(installing); StateHasChanged(); };
         }
         else if (waiting is not null)
         {
-            var statusAction = async (IServiceWorker sw) => status = $"{await sw.GetStateAsync()} and is waiting.";
+            var statusAction = async (ServiceWorker sw) => status = $"{await sw.GetStateAsync()} and is waiting.";
             await statusAction(waiting);
-            waiting.OnStateChange = async () => await statusAction(waiting);
+            waiting.OnStateChange = async () => { await statusAction(waiting); StateHasChanged(); };
         }
         else if (active is not null)
         {
-            var statusAction = async (IServiceWorker sw) => status = $"{await sw.GetStateAsync()} and is active.";
+            var statusAction = async (ServiceWorker sw) => status = $"{await sw.GetStateAsync()} and is active.";
             await statusAction(active);
-            active.OnStateChange = async () => await statusAction(active);
+            active.OnStateChange = async () => { await statusAction(active); StateHasChanged(); };
         }
         StateHasChanged();
     }
 
-    async Task UnregisterAsync()
+    async Task Unregister()
     {
         if (registration is not null) await registration.UnregisterAsync();
     }
 
-    async Task UpdateAsync()
+    async Task Update()
     {
         if (registration is not null) await registration.UpdateAsync();
     }

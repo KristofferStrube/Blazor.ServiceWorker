@@ -2,7 +2,7 @@
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class HeadersProxy : BaseJSServiceWorkerGlobalScopeProxy
+public class HeadersProxy : BaseJSProxy
 {
     public HeadersProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
     {

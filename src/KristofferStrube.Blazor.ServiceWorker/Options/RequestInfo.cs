@@ -2,26 +2,30 @@
 
 public class RequestInfo
 {
-    public readonly object request;
+    public readonly object value;
 
-    public RequestInfo(object request)
+    public RequestInfo(Request value)
     {
-        this.request = request;
+        this.value = value;
+    }
+    public RequestInfo(string value)
+    {
+        this.value = value;
     }
 
-    public static implicit operator RequestInfo(Request request)
+    public static implicit operator RequestInfo(Request value)
     {
-        return new(request);
+        return new(value);
     }
 
-    public static implicit operator RequestInfo(string request)
+    public static implicit operator RequestInfo(string value)
     {
-        return new(request);
+        return new(value);
     }
 
     public static implicit operator string(RequestInfo ri)
     {
-        return ri.request switch
+        return ri.value switch
         {
             Request request => request.Id.ToString(),
             string request => request,

@@ -1,9 +1,10 @@
 ﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
+using KristofferStrube.Blazor.WebIDL;
 using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class ServiceWorker : BaseJSWrapper, IServiceWorker
+public class ServiceWorker : BaseJSWrapper
 {
     public static async Task<ServiceWorker> CreateAsync(IJSRuntime jSRuntime, IJSObjectReference jSReference)
     {
@@ -27,6 +28,23 @@ public class ServiceWorker : BaseJSWrapper, IServiceWorker
     {
         IJSObjectReference helper = await helperTask.Value;
         return await helper.InvokeAsync<ServiceWorkerState>("getAttribute", JSReference, "state");
+    }
+
+    public async Task PostMessageAsync(Json json, IJSWrapper[]? transfer = null)
+    {
+        if (transfer is null)
+        {
+            await JSReference.InvokeVoidAsync("postMessage", json.JSReference);
+        }
+        else
+        {
+            await JSReference.InvokeVoidAsync("postMessage", json.JSReference, transfer.Select(t => t.JSReference).ToArray());
+        }
+    }
+
+    public async Task PostMessageAsync(Json json, IJSObjectReference[] transfer)
+    {
+        await JSReference.InvokeVoidAsync("postMessage", json.JSReference, transfer);
     }
 
     public Func<Task>? OnStateChange { get; set; }

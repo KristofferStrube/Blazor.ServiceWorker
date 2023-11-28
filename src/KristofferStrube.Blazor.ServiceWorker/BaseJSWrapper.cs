@@ -1,13 +1,15 @@
 ﻿using KristofferStrube.Blazor.ServiceWorker.Extensions;
+using KristofferStrube.Blazor.WebIDL;
 using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public abstract class BaseJSWrapper : IAsyncDisposable
+public abstract class BaseJSWrapper : IJSWrapper, IAsyncDisposable
 {
-    public readonly IJSObjectReference JSReference;
     protected readonly Lazy<Task<IJSObjectReference>> helperTask;
-    protected readonly IJSRuntime jSRuntime;
+
+    public IJSRuntime JSRuntime { get; }
+    public IJSObjectReference JSReference { get; }
 
     /// <summary>
     /// Constructs a wrapper instance for an equivalent JS instance.
@@ -17,8 +19,8 @@ public abstract class BaseJSWrapper : IAsyncDisposable
     public BaseJSWrapper(IJSRuntime jSRuntime, IJSObjectReference jSReference)
     {
         helperTask = new(jSRuntime.GetHelperAsync);
+        JSRuntime = jSRuntime;
         JSReference = jSReference;
-        this.jSRuntime = jSRuntime;
     }
 
     public async ValueTask DisposeAsync()

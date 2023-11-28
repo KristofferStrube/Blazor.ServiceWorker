@@ -2,7 +2,7 @@
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class FetchEvent : BaseJSServiceWorkerGlobalScopeProxy
+public class FetchEvent : BaseJSProxy
 {
     public FetchEvent(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
     {

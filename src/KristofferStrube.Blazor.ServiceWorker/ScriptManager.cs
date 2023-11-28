@@ -8,7 +8,7 @@ public static class ScriptManager
 
     public static async Task AddScriptAsync(Guid id, IJSRuntime jSRuntime, ServiceWorkerContainer container, Func<ServiceWorkerGlobalScopeProxy, Task> script)
     {
-        ServiceWorkerGlobalScopeProxy scope = new ServiceWorkerGlobalScopeProxy(jSRuntime, id, container);
+        ServiceWorkerGlobalScopeProxy scope = new(jSRuntime, id, container);
         await script(scope);
         scripts.Add(id, new(jSRuntime, container, scope, script));
     }
@@ -16,24 +16,22 @@ public static class ScriptManager
     [JSInvokable]
     public static async Task InvokeOnInstallAsync(string stringId, string eventId)
     {
-        if (Guid.TryParse(stringId, out Guid id) && scripts.TryGetValue(id, out ExecutionContext? context))
+        if (Guid.TryParse(stringId, out Guid id) &&
+            scripts.TryGetValue(id, out ExecutionContext? context) &&
+            context.Scope.OnInstall is not null)
         {
-            if (context.Scope.OnInstall is not null)
-            {
-                await context.Scope.OnInstall.Invoke();
-            }
+            await context.Scope.OnInstall.Invoke(new InstallEvent(context.JSRuntime, Guid.Parse(eventId), context.Container));
         }
     }
 
     [JSInvokable]
-    public static async Task InvokeOnActivateAsync(string stringId, string eventId)
+    public static async Task InvokeOnActivateAsync(string stringId, string _)
     {
-        if (Guid.TryParse(stringId, out Guid id) && scripts.TryGetValue(id, out ExecutionContext? context))
+        if (Guid.TryParse(stringId, out Guid id)
+            && scripts.TryGetValue(id, out ExecutionContext? context)
+            && context.Scope.OnActivate is not null)
         {
-            if (context.Scope.OnActivate is not null)
-            {
-                await context.Scope.OnActivate.Invoke();
-            }
+            await context.Scope.OnActivate.Invoke();
         }
     }
 
@@ -56,6 +54,17 @@ public static class ScriptManager
             context.Scope.OnPush is not null)
         {
             await context.Scope.OnPush.Invoke(new PushEvent(context.JSRuntime, Guid.Parse(eventId), context.Container));
+        }
+    }
+
+    [JSInvokable]
+    public static async Task InvokeOnMessageAsync(string stringId, string eventId)
+    {
+        if (Guid.TryParse(stringId, out Guid id) &&
+            scripts.TryGetValue(id, out ExecutionContext? context) &&
+            context.Scope.OnMessage is not null)
+        {
+            await context.Scope.OnMessage.Invoke(new ExtendableMessageEvent(context.JSRuntime, Guid.Parse(eventId), context.Container));
         }
     }
 }

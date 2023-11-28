@@ -2,7 +2,7 @@
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class PushEvent : BaseJSServiceWorkerGlobalScopeProxy
+public class PushEvent : BaseJSProxy
 {
     public PushEvent(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container) : base(jSRuntime, id, container)
     {

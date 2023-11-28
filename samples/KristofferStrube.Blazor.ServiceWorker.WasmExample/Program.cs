@@ -24,24 +24,23 @@ var environment = app.Services.GetRequiredService<IWebAssemblyHostEnvironment>()
 var rootPath = environment.IsProduction() ? "/Blazor.ServiceWorker" : "";
 
 var serviceWorker = await navigator.GetServiceWorkerAsync();
-var registration = await serviceWorker.RegisterAsync("./service-worker.js", rootPath, async (scope) =>
+var registration = await serviceWorker.RegisterAsync("./service-worker.js", rootPath, new Guid("58ada1ca-f125-4665-adc6-d9f76463265c"), async (scope) =>
 {
-    scope.OnInstall = async () =>
+    scope.OnInstall = async (installEvent) =>
     {
-        logger.WriteLine("We installed!");
-        var caches = await scope.GetCachesAsync();
-        var cache = await caches.OpenAsync("v1");
-        await cache.AddAsync("404.html");
-        await cache.AddAsync("empty.html");
+        logger.WriteLine("Started Install!");
+        await scope.SkipWaitingAsync();
+        logger.WriteLine("Finished Install!");
     };
     scope.OnActivate = async () =>
     {
-        logger.WriteLine("We activated!");
-        //var clients = await scope.GetClientsAsync();
-        //await clients.ClaimAsync();
+        logger.WriteLine("Started Activation!");
+        await scope.SkipWaitingAsync();
+        logger.WriteLine("Finished Activation!");
     };
     scope.OnFetch = async (fetchEvent) =>
     {
+        logger.WriteLine("Started Fetch!");
         CacheStorageProxy caches = await scope.GetCachesAsync();
         Request request = await fetchEvent.GetRequestAsync();
         string url = await request.GetURLAsync();
@@ -89,6 +88,22 @@ var registration = await serviceWorker.RegisterAsync("./service-worker.js", root
         logger.WriteLine($"blob size: {await blob.GetSizeAsync()}");
         logger.WriteLine($"json object as string: {await json.AsStringAsync()}");
         logger.WriteLine($"text: {text}");
+    };
+    scope.OnMessage = async (messageEvent) =>
+    {
+        logger.WriteLine("We got a message!");
+        try
+        {
+            var json = await messageEvent.GetDataAsync();
+            var type = await json.GetAttributeAsStringAsync("type");
+            logger.WriteLine($"The message had type '{type}'!");
+            ReadableStreamProxy payload = await json.GetAttributeProxyAsync<ReadableStreamProxy>("payload");
+            await scope.FetchAsync("https://kristoffer-strube.dk/API/receive", new RequestInit { Method = "POST", Body = payload, Credentials = "include", Duplex = "half" });
+            logger.WriteLine($"We send a fetch from a ReadableStream on the Worker Thread!");
+        }
+        catch (Exception e)
+        {
+        }
     };
     logger.WriteLine("We Initialized!");
     await Task.CompletedTask;

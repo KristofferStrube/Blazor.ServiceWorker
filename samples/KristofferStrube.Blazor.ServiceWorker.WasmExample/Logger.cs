@@ -7,10 +7,7 @@
         public void WriteLine(string message)
         {
             log = DateTime.UtcNow.ToLongTimeString() + ": " + message + "\n" + log;
-            if (OnChange is not null)
-            {
-                OnChange.Invoke();
-            }
+            OnChange?.Invoke();
         }
 
         public Action? OnChange { get; set; }

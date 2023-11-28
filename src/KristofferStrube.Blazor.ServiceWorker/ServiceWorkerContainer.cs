@@ -18,26 +18,25 @@ public class ServiceWorkerContainer : BaseJSWrapper
         }
 
         IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", JSReference, "controller");
-        return new ServiceWorker(jSRuntime, jSInstance);
+        return new ServiceWorker(JSRuntime, jSInstance);
     }
 
-    public async Task<IServiceWorkerRegistration> GetReadyAsync()
+    public async Task<ServiceWorkerRegistration> GetReadyAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
         IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttributeAsync", JSReference, "ready");
-        return new ServiceWorkerRegistration(jSRuntime, jSInstance);
+        return new ServiceWorkerRegistration(JSRuntime, jSInstance);
     }
 
-    public async Task<IServiceWorkerRegistration> RegisterAsync(string scriptURL, RegistrationOptions? options = null)
+    public async Task<ServiceWorkerRegistration> RegisterAsync(string scriptURL, RegistrationOptions? options = null)
     {
         IJSObjectReference jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("register", scriptURL, options);
-        return new ServiceWorkerRegistration(jSRuntime, jSInstance);
+        return new ServiceWorkerRegistration(JSRuntime, jSInstance);
     }
 
-    public async Task<IServiceWorkerRegistration> RegisterAsync(string scriptBootstrapperURL, string rootPath, Func<ServiceWorkerGlobalScopeProxy, Task> script)
+    public async Task<ServiceWorkerRegistration> RegisterAsync(string scriptBootstrapperURL, string rootPath, Guid id, Func<ServiceWorkerGlobalScopeProxy, Task> script)
     {
-        Guid id = Guid.Empty;
-        await ScriptManager.AddScriptAsync(id, jSRuntime, this, async (scope) =>
+        await ScriptManager.AddScriptAsync(id, JSRuntime, this, async (scope) =>
         {
             await script(scope);
             await scope.InitialBlazorHandshake();
@@ -45,14 +44,14 @@ public class ServiceWorkerContainer : BaseJSWrapper
         IJSObjectReference helper = await helperTask.Value;
         await helper.InvokeVoidAsync("registerMessageListener", JSReference);
         IJSObjectReference jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("register", $"{scriptBootstrapperURL}?id={id}&root={rootPath}", new RegistrationOptions() { Type = WorkerType.Classic, UpdateViaCache = ServiceWorkerUpdateViaCache.Imports });
-        var registration = new ServiceWorkerRegistration(jSRuntime, jSInstance);
+        var registration = new ServiceWorkerRegistration(JSRuntime, jSInstance);
         return registration;
     }
 
-    public async Task<IServiceWorkerRegistration> GetRegistrationAsync(string clientURL = "")
+    public async Task<ServiceWorkerRegistration> GetRegistrationAsync(string clientURL = "")
     {
         IJSObjectReference jSInstance = await JSReference.InvokeAsync<IJSObjectReference>("getRegistration", clientURL);
-        return new ServiceWorkerRegistration(jSRuntime, jSInstance);
+        return new ServiceWorkerRegistration(JSRuntime, jSInstance);
     }
 
     public async Task StartMessagesAsync()

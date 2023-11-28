@@ -3,7 +3,7 @@ using Microsoft.JSInterop;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class ServiceWorkerRegistration : BaseJSWrapper, IServiceWorkerRegistration
+public class ServiceWorkerRegistration : BaseJSWrapper
 {
     public static async Task<ServiceWorkerRegistration> CreateAsync(IJSRuntime jSRuntime, IJSObjectReference jSReference)
     {
@@ -17,7 +17,7 @@ public class ServiceWorkerRegistration : BaseJSWrapper, IServiceWorkerRegistrati
     {
     }
 
-    public async Task<IServiceWorker?> GetInstallingAsync()
+    public async Task<ServiceWorker?> GetInstallingAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
         if (await helper.InvokeAsync<bool>("isAttributeNullOrUndefined", JSReference, "installing"))
@@ -26,10 +26,10 @@ public class ServiceWorkerRegistration : BaseJSWrapper, IServiceWorkerRegistrati
         }
 
         IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", JSReference, "installing");
-        return new ServiceWorker(jSRuntime, jSInstance);
+        return new ServiceWorker(JSRuntime, jSInstance);
     }
 
-    public async Task<IServiceWorker?> GetWaitingAsync()
+    public async Task<ServiceWorker?> GetWaitingAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
         if (await helper.InvokeAsync<bool>("isAttributeNullOrUndefined", JSReference, "waiting"))
@@ -38,10 +38,10 @@ public class ServiceWorkerRegistration : BaseJSWrapper, IServiceWorkerRegistrati
         }
 
         IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", JSReference, "waiting");
-        return new ServiceWorker(jSRuntime, jSInstance);
+        return new ServiceWorker(JSRuntime, jSInstance);
     }
 
-    public async Task<IServiceWorker?> GetActiveAsync()
+    public async Task<ServiceWorker?> GetActiveAsync()
     {
         IJSObjectReference helper = await helperTask.Value;
         if (await helper.InvokeAsync<bool>("isAttributeNullOrUndefined", JSReference, "active"))
@@ -50,17 +50,17 @@ public class ServiceWorkerRegistration : BaseJSWrapper, IServiceWorkerRegistrati
         }
 
         IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", JSReference, "active");
-        return new ServiceWorker(jSRuntime, jSInstance);
+        return new ServiceWorker(JSRuntime, jSInstance);
     }
 
-    public async Task<INavigationPreloadManager> GetNavigationPreloadAsync()
+    public async Task<NavigationPreloadManager> GetNavigationPreloadAsync()
     {
         return await this.MemoizedTask(async () =>
-    {
-        IJSObjectReference helper = await helperTask.Value;
-        IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", JSReference, "navigationPreload");
-        return new NavigationPreloadManager(jSRuntime, jSInstance);
-    });
+        {
+            IJSObjectReference helper = await helperTask.Value;
+            IJSObjectReference jSInstance = await helper.InvokeAsync<IJSObjectReference>("getAttribute", JSReference, "navigationPreload");
+            return new NavigationPreloadManager(JSRuntime, jSInstance);
+        });
     }
 
     public async Task<string> GetScopeAsync()

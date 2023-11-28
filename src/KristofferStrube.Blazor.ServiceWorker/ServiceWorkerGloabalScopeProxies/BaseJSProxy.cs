@@ -4,13 +4,13 @@ using System;
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class BaseJSServiceWorkerGlobalScopeProxy
+public abstract class BaseJSProxy
 {
     protected readonly IJSRuntime jSRuntime;
     protected readonly Lazy<Task<IJSObjectReference>> helperTask;
     protected readonly ServiceWorkerContainer container;
 
-    public BaseJSServiceWorkerGlobalScopeProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container)
+    public BaseJSProxy(IJSRuntime jSRuntime, Guid id, ServiceWorkerContainer container)
     {
         this.jSRuntime = jSRuntime;
         helperTask = new(jSRuntime.GetHelperAsync);

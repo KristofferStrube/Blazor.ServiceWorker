@@ -41,10 +41,10 @@ self.onpush = (event) => {
     invokePost("Push", generateGUID(), event);
 }
 
-self.addEventListener("message", (e) => {
-    var message = e.data;
+self.onmessage = (event) => {
+    var message = event.data;
     if (message.type == "InitialBlazorHandshake") {
-        receivedInitialBlazorHandshakes.push(e.source.id);
+        receivedInitialBlazorHandshakes.push(event.source.id);
     }
     else if (message.type == "GetProxyAttributeAsProxy") {
         var obj = proxyDict[message.objectId][message.attribute];
@@ -68,9 +68,7 @@ self.addEventListener("message", (e) => {
             return;
         }
         for (let i = 0; i < message.args.length; i++) {
-            if (message.args[i] != null && message.args[i].length == 36 && message.args[i].charAt(8) == '-') {
-                message.args[i] = proxyDict[message.args[i]];
-            }
+            resolveEncodesIds(message.args, i);
         }
         if (message.type == "CallProxyMethodAsProxy") {
             var obj = proxyDict[message.objectId][message.method].apply(proxyDict[message.objectId], message.args);
@@ -106,7 +104,23 @@ self.addEventListener("message", (e) => {
             resolvers[message.id].apply(this, message.args);
         }
     }
-});
+    else {
+        invokePost("Message", generateGUID(), event);
+    }
+};
+
+function resolveEncodesIds(obj, key) {
+    if (obj[key] != null) {
+        if (obj[key].length == 36 && obj[key].charAt(8) == '-') {
+            obj[key] = proxyDict[obj[key]];
+        }
+        else if (obj[key] instanceof Object) {
+            for (const [nestedKey, value] of Object.entries(obj[key])) {
+                resolveEncodesIds(obj[key], nestedKey)
+            }
+        }
+    }
+}
 
 skipWaiting();
 

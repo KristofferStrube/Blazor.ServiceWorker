@@ -2,7 +2,7 @@
 
 namespace KristofferStrube.Blazor.ServiceWorker;
 
-public class NavigationPreloadManager : BaseJSWrapper, INavigationPreloadManager
+public class NavigationPreloadManager : BaseJSWrapper
 {
     public NavigationPreloadManager(IJSRuntime jSRuntime, IJSObjectReference jSReference) : base(jSRuntime, jSReference)
     {
